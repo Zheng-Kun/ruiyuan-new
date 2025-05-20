@@ -46,7 +46,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "vue/first-attribute-linebreak": 0,
-
+    "vue-scoped-css/enforce-style-type": "off",
 
     "@typescript-eslint/no-unused-vars": [
       "error",

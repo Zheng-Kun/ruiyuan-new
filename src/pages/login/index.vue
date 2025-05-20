@@ -12,7 +12,7 @@
           </div>
         </div>
 
-        <login v-if="type === 'login'" />
+        <login v-if="type === 'login'" class="login-form" />
         <register v-else @register-success="switchType('login')" />
       </div>
 

@@ -18,6 +18,7 @@ export default {
   bgContainerColor: '#fff',
   textColor: '#000', // 自动计算色阶
   inputBackgroundIsTransparent: false, // 如果为false则输入框的背景色为 #fff
+  fontFamily: 'sans' as 'serif' | 'sans',
 };
 
 // {

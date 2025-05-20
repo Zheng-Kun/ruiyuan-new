@@ -78,6 +78,11 @@
           :color-modes="['monochrome']"
           :show-primary-color-preview="false"
         />
+        <div class="setting-group-title">字体</div>
+        <t-select v-model="formData.fontFamily">
+          <t-option value="serif" label="宋体" class="setting-serif-option-item"></t-option>
+          <t-option value="sans" label="黑体" class="setting-sans-option-item"></t-option>
+        </t-select>
       </t-form>
     </div>
   </t-drawer>
@@ -192,6 +197,7 @@ watchEffect(() => {
     formData.value.bgPageColor ||
     formData.value.bgContainerColor ||
     formData.value.textColor ||
+    formData.value.fontFamily ||
     typeof formData.value.inputBackgroundIsTransparent === 'boolean'
   )
     settingStore.updateConfig(formData.value);
@@ -252,7 +258,7 @@ watchEffect(() => {
   line-height: 22px;
   margin: 32px 0 24px;
   text-align: left;
-  font-family: 'PingFang SC', var(--td-font-family);
+  font-family: var(--td-font-family);
   font-style: normal;
   font-weight: 500;
   color: var(--td-text-color-primary);
@@ -327,6 +333,12 @@ watchEffect(() => {
   .t-form__controls-content {
     justify-content: end;
   }
+}
+.setting-sans-option-item {
+  font-family: 'PingFang SC', 'Microsoft YaHei', 'Arial Regular', sans-serif !important;
+}
+.setting-serif-option-item {
+  font-family: 'SimSun', '宋体', 'SourceHanSerifSC', serif !important;
 }
 
 .setting-route-theme {

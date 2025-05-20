@@ -6,16 +6,18 @@
           <template #icon>
             <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
+          <!-- {{ getPath(item) }} -->
           {{ renderMenuTitle(item.title) }}
         </t-menu-item>
         <t-menu-item v-else :name="item.path" :value="getPath(item)" :to="item.path">
           <template #icon>
             <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
+          <!-- {{ getPath(item) }} -->
           {{ renderMenuTitle(item.title) }}
         </t-menu-item>
       </template>
-      <t-submenu v-else :name="item.path" :value="item.path" :title="renderMenuTitle(item.title)">
+      <t-submenu v-else :name="item.path" :value="item.path" :title="/* item.path +  */ renderMenuTitle(item.title)">
         <template #icon>
           <component :is="menuIcon(item)" class="t-icon"></component>
         </template>

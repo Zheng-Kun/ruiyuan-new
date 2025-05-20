@@ -9,7 +9,12 @@
   >
     <template v-if="type == 'password'">
       <t-form-item name="account">
-        <t-input v-model="formData.account" size="large" :placeholder="`${t('pages.login.input.account')}：admin`">
+        <t-input
+          v-model="formData.account"
+          size="large"
+          :placeholder="`${t('pages.login.input.account')}：admin`"
+          class="login-input"
+        >
           <template #prefix-icon>
             <t-icon name="user" />
           </template>
@@ -23,6 +28,7 @@
           :type="showPsw ? 'text' : 'password'"
           clearable
           :placeholder="`${t('pages.login.input.password')}：admin`"
+          class="login-input"
         >
           <template #prefix-icon>
             <t-icon name="lock-on" />
@@ -67,7 +73,7 @@
     </template> -->
 
     <t-form-item v-if="type !== 'qrcode'" class="btn-container">
-      <t-button block size="large" type="submit"> {{ t('pages.login.signIn') }} </t-button>
+      <t-button block size="large" type="submit" class="login-btn"> {{ t('pages.login.signIn') }} </t-button>
     </t-form-item>
 
     <!-- <div class="switch-container">

@@ -218,7 +218,7 @@ const navToHelper = () => {
 }
 
 .header-logo-container {
-  width: 184px;
+  // width: 184px;
   height: 26px;
   display: flex;
   margin-left: 24px;

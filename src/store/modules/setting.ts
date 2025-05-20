@@ -104,6 +104,9 @@ export const useSettingStore = defineStore('setting', {
         if (key === 'brandTheme') {
           this.changeBrandTheme(payload[key]);
         }
+        if (key === 'fontFamily') {
+          this.changeFontFamily();
+        }
         if (['bgPageColor', 'bgContainerColor', 'textColor', 'inputBackgroundIsTransparent'].includes(key)) {
           this.changeThemeColor();
         }
@@ -128,6 +131,17 @@ export const useSettingStore = defineStore('setting', {
         '--td-bg-color-secondarycontainer-hover': hoverContainerColor,
       };
       insertThemeColor(themeColorMap);
+    },
+    changeFontFamily() {
+      const { fontFamily } = this;
+      const fontFamilyMap = {
+        default: 'PingFang SC, Microsoft YaHei, Arial Regular, sans-serif',
+        serif: 'SimSun, 宋体, SourceHanSerifSC ,serif',
+        sans: 'PingFang SC, Microsoft YaHei, Arial Regular, sans-serif',
+      };
+      insertThemeColor({
+        '--td-font-family': fontFamilyMap[fontFamily],
+      });
     },
   },
   persist: {

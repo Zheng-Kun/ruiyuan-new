@@ -1,6 +1,10 @@
 import uniq from 'lodash/uniq';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
+// import { useLocale } from '@/locales/useLocale';
+
+// const { locale } = useLocale();
+
 const env = import.meta.env.MODE || 'development';
 
 // 导入homepage相关固定路由
@@ -87,6 +91,20 @@ const router = createRouter({
       behavior: 'smooth',
     };
   },
+});
+
+function renderTitle(title: string | Record<string, string>) {
+  if (typeof title === 'string') {
+    return title;
+  }
+  return title.zh_CN;
+}
+
+// 全局后置钩子
+router.afterEach((to, _) => {
+  // console.log('Navigation completed to:', to);
+  const title = renderTitle(to.meta.title as any);
+  document.title = `瑞元 - ${title}`;
 });
 
 export default router;

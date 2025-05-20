@@ -33,15 +33,44 @@
   top: 50%;
   left: 50%;
   // min-height: 500px;
+  width: 100%;
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  flex-direction: column;
   transform:translate(-50%,-50%);
+  .login-form {
+    width: 400px;
+    .login-input {
+      background-color: transparent;
+      :deep(.t-input) {
+        background-color: rgba(255, 255, 255, 0.4) !important;
+      }
+    }
+    .login-btn {
+      background-color: var(--td-brand-color);
+      opacity: 0.3;
+      // :deep(.t-button__text) {
+      //   opacity: 1;
+      // }
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
 }
 
 .slogan {
-  margin-top: 20px;
-  font-size: 16px;
-  font-family: "Source Serif Pro", serif;
+  margin-bottom: 60px;
+  font-size: 20px;
+  // font-family: serif;
+  font-family: 'SourceHanSerifSC';
+  // font-family: sans-serif;
   h2 {
     text-align: center;
+    letter-spacing: 4px;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 200;
   }
 }
 
