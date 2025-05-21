@@ -72,12 +72,15 @@
   }
 
   &-content-layout {
-    padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingLR-xl);
+    // main 容器
+    height: 100%;
+    // padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingLR-xl);
   }
 
   &-layout {
     height: calc(100vh - var(--td-comp-size-xxxl));
-    overflow-y: scroll;
+    // overflow-y: scroll;
+    overflow: hidden;
 
     &-tabs-nav {
       max-width: 100%;

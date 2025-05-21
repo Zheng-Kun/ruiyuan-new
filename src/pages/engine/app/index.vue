@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-inner-container">
     <card-list
       v-model:selected-ids="selectedIds"
       :fetch-list="fetchList"
@@ -82,3 +82,8 @@ function handleOperateClick(value, id) {
   MessagePlugin.success(`点击操作按钮 ${value}:${id}`);
 }
 </script>
+<style lang="less" scoped>
+.app-inner-container {
+  height: 100%;
+}
+</style>

@@ -72,6 +72,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  filterForm: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const list = ref([]);
@@ -95,7 +99,7 @@ watch(
   { deep: true },
 );
 
-const fetchNextPage = async () => {
+async function fetchNextPage() {
   if (loadingMore.value || !hasMore.value) return;
 
   loadingMore.value = true;
@@ -114,9 +118,9 @@ const fetchNextPage = async () => {
   } finally {
     loadingMore.value = false;
   }
-};
+}
 
-const handleScroll = () => {
+function handleScroll() {
   const container = containerRef.value;
   if (!container) return;
 
@@ -126,9 +130,9 @@ const handleScroll = () => {
   if (scrollTop + clientHeight >= scrollHeight - threshold) {
     fetchNextPage();
   }
-};
+}
 
-const checkAndLoadNextPage = () => {
+function checkAndLoadNextPage() {
   const container = containerRef.value;
   if (!container) return;
 
@@ -136,7 +140,7 @@ const checkAndLoadNextPage = () => {
   if (container.scrollHeight <= container.clientHeight) {
     fetchNextPage();
   }
-};
+}
 
 onMounted(() => {
   fetchNextPage().then(() => {
@@ -162,7 +166,8 @@ function handleMaskBtnClick(key, id) {
 <style scoped lang="less">
 .card-list-container {
   width: 100%;
-  max-height: 600px; // 根据需要调整
+  // max-height: 600px; // 根据需要调整
+  height: 100%;
   overflow-y: auto;
   padding: 16px;
   box-sizing: border-box;
