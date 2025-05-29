@@ -1,37 +1,89 @@
-// 合同状态枚举
-export const CONTRACT_STATUS = {
-  FAIL: 0,
-  AUDIT_PENDING: 1,
-  EXEC_PENDING: 2,
-  EXECUTING: 3,
-  FINISH: 4,
-};
-
-// 合同类型枚举
-export const CONTRACT_TYPES = {
-  MAIN: 0,
-  SUB: 1,
-  SUPPLEMENT: 2,
-};
-
-// 合同收付类型枚举
-export const CONTRACT_PAYMENT_TYPES = {
-  PAYMENT: 0,
-  RECEIPT: 1,
-};
-
-// 标签类型
-type TagTheme = 'default' | 'success' | 'primary' | 'warning' | 'danger';
-// 通知的优先级对应的标签类型
-export const NOTIFICATION_TYPES: Map<string, TagTheme> = new Map([
-  ['low', 'primary'],
-  ['middle', 'warning'],
-  ['high', 'danger'],
-]);
-
-// 通用请求头
+// 通用请求头content-type
 export enum ContentTypeEnum {
   Json = 'application/json;charset=UTF-8',
   FormURLEncoded = 'application/x-www-form-urlencoded;charset=UTF-8',
   FormData = 'multipart/form-data;charset=UTF-8',
 }
+
+// 请求响应状态码
+export enum RequestStatusEnum {
+  success = 1000, // 成功
+  overdue = 4002, // Token过期
+}
+
+// 下拉菜单key
+export enum DropdownKeyEnum {
+  space = 'space', // 空间
+  spaceReadWrite = 'space_read_write', // 空间可读写
+  spaceWrite = 'space_write', // 空间可写
+  project = 'project', // 项目
+  dataSource = 'data_source', // 数据源
+  dataSourceFileFormat = 'data_source_file_format', // 数据源文件格式
+  dataSourceOrderType = 'data_source_order_type', //  数据源排序类型
+  role = 'role',
+  user = 'create_user',
+  dataSourceTag = 'tag_data_source', // 数据源标签
+  appTag = 'tag_app', // 应用标签
+  projectTag = 'tag_project', // 项目标签
+}
+
+// 用户角色
+export enum UserRoleEnum {
+  admin = 1, // 超级管理员 所有权限
+  manager = 2, // 管理员 可创建；可编辑和分配可见范围内的权限
+  creator = 3, // 创作者 可创建；可编辑和分配自己创建的空间权限
+  member = 4, // 普通人员 仅查看权限
+}
+
+// 表单文本长度限制(MaxLength)
+export const formTextLengthLimit = {
+  spaceName: 20, // 空间名称
+  spaceDesc: 100, // 空间描述
+
+  projectName: 20, // 项目名称
+  projectDesc: 100, // 项目描述
+
+  dataSourceBackgroundDesc: 300, // 数据源背景描述
+  dataSourceAnalysisRequirements: 500, // 数据源分析需求
+
+  reportName: 20, // 报表名称
+  reportDesc: 100, // 报表描述
+
+  appName: 20, // 应用名称
+  appDesc: 100, // 应用描述
+};
+
+export const dataSourceFileSizeLimitM = 50; // 数据源文件大小限制50M
+
+export const dataSourceFileTypeList = ['csv', 'xls', 'xlsx']; // 数据源文件类型
+
+// 排序类型枚举
+export enum sortTypeEnum {
+  createTime = 1, // 创建时间倒序
+  updateTime = 3, // 更新时间倒序
+  openTime = 2, // 打开时间倒序
+  fileName = 4, // 名称A-Z
+}
+
+// 排序类型options
+export const sortTypeOptions = [
+  {
+    label: '创建时间(倒序)',
+    value: sortTypeEnum.createTime,
+  },
+  {
+    label: '更新时间(倒序)',
+    value: sortTypeEnum.updateTime,
+  },
+  {
+    label: '打开时间(倒序)',
+    value: sortTypeEnum.openTime,
+  },
+  {
+    label: '文件名称(A-Z)',
+    value: sortTypeEnum.fileName,
+  },
+];
+
+// 数据源请求数据数量
+export const dataSourceRequestCount = 1000000000;

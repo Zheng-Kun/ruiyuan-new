@@ -21,6 +21,7 @@
     "test:coverage": "echo \"no test:coverage specified,work in process\""
   },
   "dependencies": {
+    "@tdesign-vue-next/chat": "^0.3.0",
     "@vueuse/core": "^12.3.0",
     "axios": "^1.8.4",
     "dayjs": "^1.11.13",
@@ -36,6 +37,7 @@
     "tvision-color": "^1.6.0",
     "typeit": "^8.8.7",
     "vue": "^3.5.0",
+    "vue-element-plus-x": "^1.2.0",
     "vue-i18n": "^9.9.1",
     "vue-router": "~4.3.0",
     "vue-typical": "^2.1.0"

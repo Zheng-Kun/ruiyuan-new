@@ -1,6 +1,6 @@
 <template>
   <div class="app-inner-container">
-    <card-list
+    <!-- <card-list
       v-model:selected-ids="selectedIds"
       :fetch-list="fetchList"
       :page-size="10"
@@ -11,24 +11,47 @@
       @card-click="handleCardClick"
       @operate-click="handleOperateClick"
       @mask-btn-click="handleMaskBtnClick"
-    />
+    /> -->
+    <filter-card-list
+      v-model:selected-ids="selectedIds"
+      :fetch-list="fetchList"
+      :page-size="10"
+      :info-config="infoConfig"
+      :operates="operates"
+      :enable-click="true"
+      :can-select="false"
+      :filter-form="filterForm"
+      @card-click="handleCardClick"
+      @operate-click="handleOperateClick"
+      @mask-btn-click="handleMaskBtnClick"
+    >
+      <template #filters>
+        <t-input v-model="filterForm.name" placeholder="请输入名称"></t-input>
+      </template>
+    </filter-card-list>
   </div>
   <!-- :mask-btns="maskBtns" -->
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { MessagePlugin } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
-import CardList from '@/components/card-list/index.vue';
+import filterCardList from '@/components/card-list/filter-card-list.vue';
+// import CardList from '@/components/card-list/index.vue';
+import { FilterData } from '@/components/card-list/types';
 
 const selectedIds = ref([]); // 示例选中 ID 列表
+const filterForm = ref({
+  name: '',
+});
 
-const fetchList = async (page, pageSize) => {
+const fetchList = async (filterData: FilterData) => {
   // 模拟分页数据获取
   await new Promise((resolve) => {
-    setTimeout(resolve, 5000);
+    setTimeout(resolve, 2000);
   });
+  const { page, pageSize, name } = filterData;
   const total = 50; // 总数据量
   const start = (page - 1) * pageSize;
   const end = Math.min(start + pageSize, total);
@@ -36,7 +59,7 @@ const fetchList = async (page, pageSize) => {
   return {
     list: Array.from({ length: end - start }, (_, i) => ({
       id: start + i + 1,
-      title: `卡片 ${start + i + 1}`,
+      title: `卡片 ${start + i + 1}${name || ''}`,
       desc: `这是卡片 ${start + i + 1} 的描述, 描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述`,
       tags: ['标签1', '标签2'],
       customField1: `自定义字段 ${start + i + 1}`,
@@ -51,10 +74,10 @@ const fetchList = async (page, pageSize) => {
 };
 
 const infoConfig = ref([
-  { label: '自定义字段1', key: 'customField1' },
-  { label: '自定义字段2', key: 'customField2' },
-  { label: '自定义字段3', key: 'customField3' },
-  { label: '自定义字段4', key: 'customField4' },
+  // { label: '自定义字段1', key: 'customField1' },
+  // { label: '自定义字段2', key: 'customField2' },
+  // { label: '自定义字段3', key: 'customField3' },
+  // { label: '自定义字段4', key: 'customField4' },
 ]);
 
 const operates = ref([

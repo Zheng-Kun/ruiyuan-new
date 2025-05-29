@@ -29,6 +29,16 @@ export default [
         },
       },
       {
+        path: 'app/edit',
+        name: 'EngineAppEdit',
+        component: () => import('@/pages/engine/app/editAgent.vue'),
+        meta: {
+          title: {
+            zh_CN: '生成应用',
+          },
+        },
+      },
+      {
         path: 'project',
         name: 'EngineProject',
         component: () => import('@/pages/engine/project/index.vue'),

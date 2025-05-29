@@ -222,15 +222,16 @@ export function generateTextColorScheme(mainColorHex: string, backgroundColorHex
   // 主要颜色
   const mainColor = expandHex(mainColorHex);
   const isLightBg = isLightColor(backgroundColorHex);
+  console.log('isLightBg', isLightBg);
 
   // 次要字体颜色
-  const secondaryColor = isLightBg ? adjustBrightness(mainColor, -50) : adjustBrightness(mainColor, 50);
+  const secondaryColor = isLightBg ? adjustBrightness(mainColor, 50) : adjustBrightness(mainColor, -50);
 
   // placeholder 字体颜色
-  const placeholderColor = isLightBg ? adjustBrightness(mainColor, 50) : adjustBrightness(mainColor, -50);
+  const placeholderColor = isLightBg ? adjustBrightness(mainColor, 100) : adjustBrightness(mainColor, -100);
 
   // disable 字体颜色
-  const disableColor = isLightBg ? adjustBrightness(mainColor, 100) : adjustBrightness(mainColor, -100);
+  const disableColor = isLightBg ? adjustBrightness(mainColor, 150) : adjustBrightness(mainColor, -150);
 
   return [mainColor, secondaryColor, placeholderColor, disableColor];
 }

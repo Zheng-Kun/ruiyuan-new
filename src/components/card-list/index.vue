@@ -164,26 +164,27 @@ function handleMaskBtnClick(key, id) {
 </script>
 
 <style scoped lang="less">
+@space-between-card: 20px;
 .card-list-container {
   width: 100%;
   // max-height: 600px; // 根据需要调整
   height: 100%;
   overflow-y: auto;
-  padding: 16px;
+  padding: @space-between-card;
   box-sizing: border-box;
 }
 
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
+  gap: @space-between-card;
 }
 
 .empty-tip,
 .loading-tip,
 .no-more-tip {
   text-align: center;
-  margin-top: 16px;
+  margin-top: @space-between-card;
   color: #999;
 }
 </style>

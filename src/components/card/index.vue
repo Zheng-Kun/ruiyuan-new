@@ -23,15 +23,15 @@
           </div>
         </div>
       </template>
-      <div class="card-content">
+      <div v-if="infoConfig.length > 0" class="card-content">
         <div v-for="item in infoConfig" :key="item.key" class="card-info-item">
           <span class="label">{{ item.label }}：</span>
           <span class="value">{{ info[item.key] }}</span>
         </div>
       </div>
-      <div class="desc">
-        <span class="label">描述</span>
-        <text-ellipsis :text="info.desc" title="描述"> </text-ellipsis>
+      <div v-if="info.desc" class="desc">
+        <!-- <span class="label">描述</span> -->
+        <text-ellipsis class="desc-text" :text="info.desc" title="描述"> </text-ellipsis>
       </div>
       <div v-if="info.tags && info.tags.length > 0" class="tag-container">
         <tags :tags="info.tags"></tags>
@@ -59,7 +59,7 @@
 </template>
 <script setup lang="ts">
 import { MoreIcon } from 'tdesign-icons-vue-next';
-import { computed, h, ref, withDefaults } from 'vue';
+import { computed, ref, withDefaults } from 'vue';
 
 import Tags from '@/components/tag-list/index.vue';
 import TextEllipsis from '@/components/text-ellipsis/index.vue';
@@ -69,18 +69,17 @@ const props = withDefaults(
     info: {
       title: string;
       id: number;
-      desc: string;
+      desc?: string;
       tags?: string[];
       [key: string]: any;
     };
-    infoConfig: {
+    infoConfig?: {
       label: string;
       key: string;
     }[];
     operates?: {
       name: string;
       key: string;
-      icon?: string;
     }[];
     enableClick?: boolean;
     maskBtns?: {
@@ -91,7 +90,14 @@ const props = withDefaults(
     canSelect?: boolean;
     selected?: boolean;
   }>(),
-  {},
+  {
+    canSelect: false,
+    infoConfig: () => [],
+    operates: () => [],
+    enableClick: false,
+    maskBtns: () => [],
+    selected: false,
+  },
 );
 const emits = defineEmits(['update:selected', 'card-click', 'operate-click', 'mask-btn-click']);
 const showMask = ref(false);
@@ -160,13 +166,18 @@ function handleMaskBtnClick(key: string) {
     }
   }
 
+  :deep(.t-card__body) {
+    padding-top: 0;
+  }
+
   .card-content {
+    margin-bottom: 20px;
     .card-info-item {
       margin-bottom: 4px;
     }
   }
-  .desc {
-    margin-top: 20px;
+  :deep(.desc-text) {
+    color: var(--td-text-color-placeholder);
   }
   .tag-container {
     margin-top: 8px;
