@@ -14,21 +14,25 @@
             @delete="handleDeleteItem(item.id)"
             @edit="handleEditItem(item)"
             @pin="handlePinItem(item)"
+            @click="activeId = item.id"
           ></chat-item>
         </ul>
       </div>
     </template>
+    <t-dialog v-model:visible="editTitleData.dialogVisible" header="编辑对话标题" @confirm="handleEditConfirm">
+      <t-input v-model="editTitleData.title" placeholder="请输入新的对话标题" @enter="handleEditConfirm" />
+    </t-dialog>
   </div>
 </template>
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { DialogPlugin } from 'tdesign-vue-next';
-import { computed, onMounted, ref } from 'vue';
+import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 import chatApi from '@/api/chat';
 
-import chatItem from './chatItem.vue';
+import chatItem from './chatTitleItem.vue';
 
 dayjs.extend(customParseFormat);
 
@@ -53,6 +57,11 @@ const emit = defineEmits<{
   (e: 'edit', id: number, title: string): void;
   (e: 'delete', id: number): void;
 }>();
+
+const activeId = computed({
+  get: () => props.activeId,
+  set: (id) => emit('update:activeId', id),
+});
 
 const loading = ref(false);
 
@@ -116,12 +125,12 @@ const chatGroupList = computed<{
   }
 
   for (const item of chatList.value.filter((item) => !item.pinned)) {
-    console.log('item', item.time);
+    // console.log('item', item.time);
     const date = dayjs(item.time, 'YYYY-MM-DD HH:mm:ss');
 
     // 忽略时间部分，只保留日期：例如 2025-05-28T10:30:00 → 2025-05-28T00:00:00
     const diffInDays = now.diff(date, 'day'); // 精确到“天”的差异，不考虑小时、分钟等
-    console.log(diffInDays);
+    // console.log(diffInDays);
 
     let matched = false;
     for (const [key, config] of groupKeyMap.entries()) {
@@ -142,9 +151,10 @@ const chatGroupList = computed<{
   return result;
 });
 
-const activeId = computed({
-  get: () => props.activeId,
-  set: (id) => emit('update:activeId', id),
+const editTitleData = reactive({
+  id: 0,
+  dialogVisible: false,
+  title: '',
 });
 
 function handleDeleteItem(id: number) {
@@ -190,6 +200,24 @@ function deleteItem(id: number) {
 
 function handleEditItem(item: ChatItem) {
   // emit('edit', item.id, item.title);
+  Object.assign(editTitleData, {
+    id: item.id,
+    dialogVisible: true,
+    title: item.title,
+  });
+}
+
+function handleEditConfirm() {
+  if (!editTitleData.title.trim().length) {
+    MessagePlugin.error('标题不能为空');
+    return;
+  }
+  chatList.value.find((i) => i.id === editTitleData.id).title = editTitleData.title;
+  Object.assign(editTitleData, {
+    id: 0,
+    dialogVisible: false,
+    title: '',
+  });
 }
 
 /**
@@ -240,7 +268,7 @@ function getChatList() {
       color: var(--td-text-color-disabled);
       position: sticky;
       top: 40px;
-      background-color: var(--td-bg-color-container);
+      background-color: var(--td-bg-color-page);
     }
 
     .chat-list {

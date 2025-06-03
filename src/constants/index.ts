@@ -13,18 +13,8 @@ export enum RequestStatusEnum {
 
 // 下拉菜单key
 export enum DropdownKeyEnum {
-  space = 'space', // 空间
-  spaceReadWrite = 'space_read_write', // 空间可读写
-  spaceWrite = 'space_write', // 空间可写
   project = 'project', // 项目
-  dataSource = 'data_source', // 数据源
-  dataSourceFileFormat = 'data_source_file_format', // 数据源文件格式
-  dataSourceOrderType = 'data_source_order_type', //  数据源排序类型
-  role = 'role',
-  user = 'create_user',
-  dataSourceTag = 'tag_data_source', // 数据源标签
-  appTag = 'tag_app', // 应用标签
-  projectTag = 'tag_project', // 项目标签
+  engineTemplate = 'engine_template', // 智擎模板
 }
 
 // 用户角色

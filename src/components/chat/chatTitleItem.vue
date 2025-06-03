@@ -82,13 +82,14 @@ const emit = defineEmits<{
   transition: background-color 0.3s;
 
   &.active {
-    background-color: #f0f0f0;
+    // background-color: #f0f0f0;
+    background-color: var(--td-bg-color-container);
   }
   &.pinned {
     font-weight: bold;
   }
   &:hover {
-    background-color: #e6e6e6;
+    background-color: var(--td-bg-color-container);
   }
 
   .title {
