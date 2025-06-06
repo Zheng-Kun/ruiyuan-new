@@ -113,9 +113,9 @@ export const useSettingStore = defineStore('setting', {
       }
     },
     changeThemeColor() {
-      console.log('changeThemeColor');
+      // console.log('changeThemeColor');
       const textColors = generateTextColorScheme(this.textColor, this.bgContainerColor);
-      console.log('textColors', textColors);
+      // console.log('textColors', textColors);
       const hoverContainerColor = isLightColor(this.bgContainerColor)
         ? adjustBrightness(this.bgContainerColor, -20)
         : adjustBrightness(this.bgContainerColor, 20);
@@ -141,7 +141,7 @@ export const useSettingStore = defineStore('setting', {
         sans: 'PingFang SC, Microsoft YaHei, Arial Regular, sans-serif',
       };
       insertThemeColor({
-        '--td-font-family': fontFamilyMap[fontFamily],
+        '--td-font-family': fontFamilyMap[fontFamily as keyof typeof fontFamilyMap],
       });
     },
   },

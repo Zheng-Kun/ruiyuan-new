@@ -32,8 +32,9 @@ export interface MenuRoute {
 export type ModeType = 'dark' | 'light';
 
 export interface UserInfo {
-  name: string;
-  roles: string[];
+  username: string;
+  userId?: number;
+  roles: number[];
 }
 
 export interface NotificationItem {

@@ -102,7 +102,7 @@ const userStore = useUserStore();
 const INITIAL_DATA = {
   phone: '',
   account: 'admin',
-  password: 'admin',
+  password: 'admin123',
   verifyCode: '',
   checked: false,
 };
@@ -143,15 +143,18 @@ const sendCode = () => {
 const onSubmit = async (ctx: SubmitContext) => {
   if (ctx.validateResult === true) {
     try {
-      await userStore.login(formData.value);
+      await userStore.login({
+        username: formData.value.account,
+        password: formData.value.password,
+      });
 
       MessagePlugin.success('登录成功');
       const redirect = route.query.redirect as string;
       const redirectUrl = redirect ? decodeURIComponent(redirect) : '/dashboard';
+      console.log(redirectUrl)
       router.push(redirectUrl);
     } catch (e) {
       console.log(e);
-      MessagePlugin.error(e.message);
     }
   }
 };

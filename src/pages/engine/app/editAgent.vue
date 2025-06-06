@@ -304,7 +304,7 @@ async function init() {
       .chat-content {
         flex: 1;
         height: 100%;
-        width: 45%;
+        width: 40%;
         overflow: hidden;
         background-color: var(--td-bg-color-container);
         // border-radius: 10px 0 0 10px;
@@ -316,7 +316,7 @@ async function init() {
         }
       }
       .preview-container {
-        width: 55%;
+        width: 60%;
         background-color: var(--td-bg-color-container);
         border-radius: 10px 10px 10px 10px;
         padding: 20px;

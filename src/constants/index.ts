@@ -9,6 +9,7 @@ export enum ContentTypeEnum {
 export enum RequestStatusEnum {
   success = 1000, // 成功
   overdue = 4002, // Token过期
+  tokenError = 4001, // Token 格式错误
 }
 
 // 下拉菜单key
@@ -19,10 +20,9 @@ export enum DropdownKeyEnum {
 
 // 用户角色
 export enum UserRoleEnum {
-  admin = 1, // 超级管理员 所有权限
-  manager = 2, // 管理员 可创建；可编辑和分配可见范围内的权限
-  creator = 3, // 创作者 可创建；可编辑和分配自己创建的空间权限
-  member = 4, // 普通人员 仅查看权限
+  admin = 0, // 超级管理员 所有权限
+  level2 = 1, // 管理员 可创建；可编辑和分配可见范围内的权限
+  level3 = 2, // 创作者 可创建；可编辑和分配自己创建的空间权限
 }
 
 // 表单文本长度限制(MaxLength)

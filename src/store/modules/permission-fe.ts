@@ -6,25 +6,31 @@ import { RouteRecordRaw } from 'vue-router';
 
 import router, { allRoutes } from '@/router';
 import { store } from '@/store';
+import { UserRoleEnum } from '@/constants'
 
-function filterPermissionsRouters(routes: Array<RouteRecordRaw>, roles: Array<unknown>) {
+function filterPermissionsRouters(routes: Array<RouteRecordRaw>, roles: Array<UserRoleEnum>) {
   const res: Array<RouteRecordRaw> = [];
   const removeRoutes: Array<RouteRecordRaw> = [];
   routes.forEach((route) => {
     const children: Array<RouteRecordRaw> = [];
     route.children?.forEach((childRouter) => {
-      const roleCode = childRouter.meta?.roleCode || childRouter.name;
-      if (roles.indexOf(roleCode) !== -1) {
+      const roleCodes = childRouter.meta?.roleCodes as UserRoleEnum[];
+      // console.log(roleCodes)
+      if(!roleCodes || !roleCodes?.length || roles.filter((item) => roleCodes.includes(item)).length) {
         children.push(childRouter);
       } else {
         removeRoutes.push(childRouter);
       }
+      // if (roles.indexOf(roleCode) !== -1) {
+      // } else {
+      // }
     });
     if (children.length > 0) {
       route.children = children;
       res.push(route);
     }
   });
+  // console.log('removeRoutes',removeRoutes)
   return { accessedRouters: res, removeRoutes };
 }
 
@@ -35,15 +41,18 @@ export const usePermissionStore = defineStore('permission', {
     removeRoutes: [] as any[],
   }),
   actions: {
-    async initRoutes(roles: Array<unknown>) {
+    async initRoutes(roles?: Array<UserRoleEnum>) {
       // const userStore = useUserStore();
       let accessedRouters = [];
       // roles = userStore.userInfo.roles;
       let removeRoutes: Array<RouteRecordRaw> = [];
       // special token
-      if (roles.includes('all')) {
+      if(!roles || roles.length === 0) {
+        accessedRouters = allRoutes
+      }
+      /* if (roles.includes(UserRoleEnum.admin)) {
         accessedRouters = allRoutes;
-      } else {
+      } */ else {
         const res = filterPermissionsRouters(allRoutes, roles);
         accessedRouters = res.accessedRouters;
         removeRoutes = res.removeRoutes;

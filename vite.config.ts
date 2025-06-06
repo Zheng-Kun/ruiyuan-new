@@ -57,7 +57,12 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       port: 30002,
       host: '0.0.0.0',
       proxy: {
-        [VITE_API_URL_PREFIX]: 'http://127.0.0.1:3000/',
+        [VITE_API_URL_PREFIX]: {
+          target: 'http://192.168.120.167:10000/',
+          rewrite(path) {
+            return path.replace(new RegExp(`^${VITE_API_URL_PREFIX}`), '');
+          },
+        },
       },
     },
   };

@@ -107,7 +107,8 @@ function encodeWAV(samples: Float32Array, sampleRate: number): Uint8Array {
 // 重新采样并生成 WAV 文件
 async function resampleAndEncodeWAV(blob: Blob, targetSampleRate: number): Promise<Blob> {
   const arrayBuffer = await blob.arrayBuffer();
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+  const audioContext = new AudioContextClass();
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
   const originalSampleRate = audioBuffer.sampleRate;

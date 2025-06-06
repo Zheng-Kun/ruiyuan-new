@@ -4,6 +4,7 @@ import NProgress from 'nprogress'; // progress bar
 import { MessagePlugin } from 'tdesign-vue-next';
 import { RouteRecordRaw } from 'vue-router';
 
+
 import router from '@/router';
 import { getPermissionStore, useUserStore } from '@/store';
 import { PAGE_NOT_FOUND_ROUTE } from '@/utils/route/constant';
@@ -17,16 +18,16 @@ router.beforeEach(async (to, from, next) => {
   const { whiteListRouters } = permissionStore;
 
   const userStore = useUserStore();
+  console.log("路由跳转", from.path, '==>',to.path,)
 
   if (userStore.token) {
     if (to.path === '/login') {
       next();
       return;
-    }
-    try {
+    } try {
       await userStore.getUserInfo();
 
-      const { asyncRoutes } = permissionStore;
+      /* const { asyncRoutes } = permissionStore;
 
       if (asyncRoutes && asyncRoutes.length === 0) {
         const routeList = await permissionStore.buildAsyncRoutes();
@@ -42,14 +43,16 @@ router.beforeEach(async (to, from, next) => {
           next(to.path === redirect ? { ...to, replace: true } : { path: redirect, query: to.query });
           return;
         }
-      }
+      } */
       if (router.hasRoute(to.name)) {
         next();
+        // console.log('hasRoute', to.name)
       } else {
+        // console.log('not hasRoute', to.name)
         next(`/`);
       }
     } catch (error) {
-      MessagePlugin.error(error.message);
+      // MessagePlugin.error(error.message);
       next({
         path: '/login',
         query: { redirect: encodeURIComponent(to.fullPath) },
@@ -57,6 +60,7 @@ router.beforeEach(async (to, from, next) => {
       NProgress.done();
     }
   } else {
+    console.log("no token")
     /* white list router */
     if (whiteListRouters.indexOf(to.path) !== -1) {
       next();
@@ -72,11 +76,12 @@ router.beforeEach(async (to, from, next) => {
 
 router.afterEach((to) => {
   if (to.path === '/login') {
-    const userStore = useUserStore();
+    // const userStore = useUserStore();
     const permissionStore = getPermissionStore();
 
-    userStore.logout();
-    permissionStore.restoreRoutes();
+    // userStore.logout();
+    // permissionStore.restoreRoutes();
+    permissionStore.restore()
   }
   NProgress.done();
 });

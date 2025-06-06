@@ -1,7 +1,6 @@
 import * as echarts from 'echarts/core';
 import trim from 'lodash/trim';
 import { Color } from 'tvision-color';
-import { s } from 'vite/dist/node/types.d-aGj9QkWt';
 
 import { TColorToken } from '@/config/color';
 import { ModeType } from '@/types/interface';
@@ -202,7 +201,7 @@ export function adjustBrightness(hex: string, adjustment: number) {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
-  console.log('亮度调整', hex, r, g, b);
+  // console.log('亮度调整', hex, r, g, b);
 
   // 调整亮度
   const newR = Math.max(0, Math.min(255, r + adjustment));
@@ -222,7 +221,7 @@ export function generateTextColorScheme(mainColorHex: string, backgroundColorHex
   // 主要颜色
   const mainColor = expandHex(mainColorHex);
   const isLightBg = isLightColor(backgroundColorHex);
-  console.log('isLightBg', isLightBg);
+  // console.log('isLightBg', isLightBg);
 
   // 次要字体颜色
   const secondaryColor = isLightBg ? adjustBrightness(mainColor, 50) : adjustBrightness(mainColor, -50);

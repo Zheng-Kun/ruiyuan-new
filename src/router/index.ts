@@ -18,6 +18,9 @@ const defaultRouterList: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'login',
+    meta: {
+      title: '登录',
+    },
     component: () => import('@/pages/login/index.vue'),
   },
   {
@@ -97,6 +100,7 @@ function renderTitle(title: string | Record<string, string>) {
   if (typeof title === 'string') {
     return title;
   }
+  // console.log(title);
   return title.zh_CN;
 }
 

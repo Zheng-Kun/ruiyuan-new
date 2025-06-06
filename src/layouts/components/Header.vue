@@ -37,7 +37,7 @@
               <template #icon>
                 <t-icon class="header-user-avatar" name="user-circle" />
               </template>
-              <div class="header-user-account">{{ user.userInfo.name }}</div>
+              <div class="header-user-account">{{ user.userInfo.username }}</div>
               <template #suffix><chevron-down-icon /></template>
             </t-button>
           </t-dropdown>
@@ -49,6 +49,9 @@
         </div>
       </template>
     </t-head-menu>
+    <t-dialog v-model:visible="helpDialogVisible" :width="600" header="帮助文档" :footer="false">
+      <h3>建设中</h3>
+    </t-dialog>
   </div>
 </template>
 
@@ -84,7 +87,7 @@ const { theme, layout, showLogo, menu, isFixed, isCompact } = defineProps({
   },
   menu: {
     type: Array as PropType<MenuRoute[]>,
-    default: () => [],
+    default: (): MenuRoute[] => [],
   },
   isFixed: {
     type: Boolean,
@@ -103,6 +106,8 @@ const { theme, layout, showLogo, menu, isFixed, isCompact } = defineProps({
 const router = useRouter();
 const settingStore = useSettingStore();
 const user = useUserStore();
+
+const helpDialogVisible = ref(false);
 
 const toggleSettingPanel = () => {
   settingStore.updateConfig({
@@ -154,7 +159,8 @@ const navToGitHub = () => {
 };
 
 const navToHelper = () => {
-  window.open('http://tdesign.tencent.com/starter/docs/get-started');
+  // window.open('http://tdesign.tencent.com/starter/docs/get-started');
+  helpDialogVisible.value = true;
 };
 </script>
 <style lang="less" scoped>

@@ -32,50 +32,34 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { MessagePlugin } from 'tdesign-vue-next';
 import { nextTick, onMounted, ref, watch } from 'vue';
 
 import Card from '@/components/card/index.vue'; // 引入前面定义的 Card 组件
 import myLoading from '@/components/loading/index.vue';
 
-const props = defineProps({
-  selectedIds: {
-    type: Array,
-    default: () => [],
-  },
-  fetchList: {
-    type: Function,
-    required: true,
-  },
-  pageSize: {
-    type: Number,
-    default: 10,
-  },
-  infoConfig: {
-    type: Array,
-    default: () => [],
-  },
-  operates: {
-    type: Array,
-    default: () => [],
-  },
-  enableClick: {
-    type: Boolean,
-    default: false,
-  },
-  maskBtns: {
-    type: Array,
-    default: () => [],
-  },
-  canSelect: {
-    type: Boolean,
-    default: false,
-  },
-  filterForm: {
-    type: Object,
-    default: () => ({}),
-  },
+interface CardListProps {
+  selectedIds: string[];
+  fetchList: (page: number, pageSize: number) => Promise<any>;
+  pageSize: number;
+  infoConfig: any[];
+  operates: any[];
+  enableClick: boolean;
+  maskBtns: any[];
+  canSelect: boolean;
+  filterForm: Record<string, any>;
+}
+
+const props = withDefaults(defineProps<CardListProps>(), {
+  selectedIds: () => [],
+  pageSize: 10,
+  infoConfig: () => [],
+  operates: () => [],
+  enableClick: false,
+  maskBtns: () => [],
+  canSelect: false,
+  filterForm: () => ({}),
 });
 
 const list = ref([]);
@@ -85,7 +69,7 @@ const currentPage = ref(1);
 const totalPage = ref(0);
 const containerRef = ref(null);
 
-const selectedMap = ref({});
+const selectedMap = ref<Record<string, boolean>>({});
 
 const emit = defineEmits(['update:selectedIds', 'card-click', 'operate-click', 'mask-btn-click']);
 
@@ -150,15 +134,15 @@ onMounted(() => {
   });
 });
 
-function handleCardClick(id) {
+function handleCardClick(id: number) {
   emit('card-click', id);
 }
 
-function handleOperateClick(value, id) {
+function handleOperateClick(value: string, id: number) {
   emit('operate-click', value, id);
 }
 
-function handleMaskBtnClick(key, id) {
+function handleMaskBtnClick(key: string, id: number) {
   emit('mask-btn-click', key, id);
 }
 </script>

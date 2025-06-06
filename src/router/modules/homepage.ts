@@ -11,7 +11,7 @@ export default [
     name: 'dashboard',
     meta: {
       title: {
-        zh_CN: '仪表盘',
+        zh_CN: '首页',
         en_US: 'Dashboard',
       },
       icon: shallowRef(DashboardIcon),
@@ -24,7 +24,7 @@ export default [
         component: () => import('@/pages/dashboard/base/index.vue'),
         meta: {
           title: {
-            zh_CN: '概览仪表盘',
+            zh_CN: '首页',
             en_US: 'Overview',
           },
         },

@@ -1,9 +1,12 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
 import type { AxiosInstance } from 'axios';
+import { throttle } from 'lodash';
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
+import { MessagePlugin } from 'tdesign-vue-next';
 
-import { ContentTypeEnum } from '@/constants';
+import { ContentTypeEnum, RequestStatusEnum } from '@/constants';
+import router from '@/router';
 import { useUserStore } from '@/store';
 
 import { VAxios } from './Axios';
@@ -15,10 +18,21 @@ const env = import.meta.env.MODE || 'development';
 // 如果是mock模式 或 没启用直连代理 就不配置host 会走本地Mock拦截 或 Vite 代理
 const host = env === 'mock' || import.meta.env.VITE_IS_REQUEST_PROXY !== 'true' ? '' : import.meta.env.VITE_API_URL;
 
+const tokenOverdueMessage = throttle(
+  () => {
+    MessagePlugin.error('登录凭证已过期,请重新登录');
+  },
+  5000,
+  {
+    trailing: false,
+  },
+);
+
 // 数据处理，方便区分多种处理方式
 const transform: AxiosTransform = {
   // 处理请求数据。如果数据不是预期格式，可直接抛出错误
   transformRequestHook: (res, options) => {
+    console.log('transformRequestHook');
     const { isTransformResponse, isReturnNativeResponse } = options;
 
     // 如果204无内容直接返回
@@ -47,12 +61,13 @@ const transform: AxiosTransform = {
     const { code } = data;
 
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && code === 0;
+    const hasSuccess = data && code === RequestStatusEnum.success;
     if (hasSuccess) {
       return data.data;
     }
-
-    throw new Error(`请求接口错误, 错误码: ${code}`);
+    console.error('请求错误', data);
+    // 抛出错误以便走到Promise的catch分支
+    throw new Error((data as any).msg || '请求失败');
   },
 
   // 请求前处理配置
@@ -127,6 +142,24 @@ const transform: AxiosTransform = {
 
   // 响应拦截器处理
   responseInterceptors: (res) => {
+    console.log('响应拦截器');
+    if ([RequestStatusEnum.overdue, RequestStatusEnum.tokenError].includes(res.data.code)) {
+      // 非登录页跳转，防止循环跳转
+      if (router?.currentRoute?.value.name !== 'login') {
+        router?.push('/login');
+      }
+
+      const userStore = useUserStore();
+      userStore.token = '';
+      tokenOverdueMessage();
+      return res;
+    }
+    if (res.data.code !== RequestStatusEnum.success && res.headers['content-type'].includes('application/json')) {
+      // console.log('响应拦截器错误', res.data);
+      // return res;
+      MessagePlugin.error(res.data.msg || '请求失败，请稍后重试');
+      // throw new Error(res.data.msg || '请求失败');
+    }
     return res;
   },
 
@@ -159,7 +192,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // 例如: authenticationScheme: 'Bearer'
         authenticationScheme: '',
         // 超时
-        timeout: 10 * 1000,
+        timeout: 60 * 1000,
         // 携带Cookie
         withCredentials: true,
         // 头信息
@@ -192,11 +225,8 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           ignoreCancelToken: true,
           // 是否携带token
           withToken: true,
-          // 重试
-          retry: {
-            count: 3,
-            delay: 1000,
-          },
+          // 关闭重试
+          retry: undefined,
         },
       },
       opt || {},

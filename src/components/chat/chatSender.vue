@@ -1,104 +1,111 @@
 <template>
-    <Sender
-      ref="chatSenderRef"
-      v-model="inputValue"
-      placeholder="按Enter发送，按Shift+Enter换行"
-      :loading="sendLoading"
-      clearable
-      allow-speech
-      variant="updown"
-      header-animation-timer="300"
-      class="chat-sender"
-      @submit="handleSubmit"
-    >
-      <!-- header -->
-      <template #header>
-        <div class="file-list">
-          <files-card
-            v-for="item in files"
-            :key="item.id"
-            img-variant="square"
-            v-bind="{ ...item }"
-            :color="colorMap[item.fileType]"
-            :show-delete-icon="true"
-            class="file-card"
-            :img-preview-mask="false"
-            @delete="handleDeleteFile(item.id)"
-          />
-        </div>
-      </template>
+  <Sender
+    ref="chatSenderRef"
+    v-model="inputValue"
+    placeholder="按Enter发送，按Shift+Enter换行"
+    :loading="sendLoading"
+    clearable
+    allow-speech
+    variant="updown"
+    header-animation-timer="300"
+    class="chat-sender"
+    @submit="handleSubmit"
+  >
+    <!-- header -->
+    <template #header>
+      <div class="file-list">
+        <files-card
+          v-for="item in files"
+          :key="item.id"
+          img-variant="square"
+          v-bind="{ ...item }"
+          :color="colorMap[item.fileType]"
+          :show-delete-icon="true"
+          class="file-card"
+          :img-preview-mask="false"
+          @delete="handleDeleteFile(item.id)"
+        />
+      </div>
+    </template>
 
-      <template #prefix>
-        <t-popup trigger="hover" placement="bottom" content="上传附件">
-          <t-button variant="outline" shape="round" @click="openOrCloseHeader(!headerIsOpen)">
-            <template #icon>
-              <attach-icon />
-            </template>
-          </t-button>
-        </t-popup>
-        <t-popup trigger="hover" placement="bottom"content="数据列名快速引用">
-          <t-dropdown :options="dataColumnNameOptions" :max-column-width="120" :max-height="200" @click="handleInsetColumnName" trigger="click" placement="top">
-            <t-button variant="outline" shape="round">
-              <template #icon>
-                <TableLargePlusIcon width="16px" />
-              </template>
-            </t-button>
-          </t-dropdown>
-        </t-popup>
-        <t-popup trigger="hover" placement="bottom"content="优化提示词">
-          <t-button variant="outline" shape="round" :disabled="!inputValue.trim().length" @click="handleShowPreferDialog">
-            <template #icon>
-              <filter3-icon />
-            </template>
-          </t-button>
-        </t-popup>
-      </template>
-
-      <!-- 操作按钮 -->
-      <template #action-list>
-        <t-button variant="outline" shape="circle" @click="handleClear">
-          <clear-icon />
-        </t-button>
-        <t-button
-          variant="outline"
-          shape="circle"
-          :disabled="recognizing"
-          :loading="recognizing"
-          @click="handleRecordClick"
-        >
+    <template #prefix>
+      <t-popup trigger="hover" placement="bottom" content="上传附件">
+        <t-button variant="outline" shape="round" @click="openOrCloseHeader(!headerIsOpen)">
           <template #icon>
-            <div v-if="recording" class="recording-animation"></div>
-            <microphone1-icon v-else />
+            <attach-icon />
           </template>
         </t-button>
-        <t-button
-          variant="base"
-          theme="primary"
-          shape="round"
-          :disabled="!inputValue.trim().length"
-          @click="handleSendClick"
-          ><template #icon> <send-icon /> </template
-        ></t-button>
-      </template>
-      <!-- <template v-if="false" #footer>
+      </t-popup>
+      <t-popup trigger="hover" placement="bottom" content="数据列名快速引用">
+        <t-dropdown
+          :options="dataColumnNameOptions"
+          :max-column-width="120"
+          :max-height="200"
+          trigger="click"
+          placement="top"
+          @click="handleInsetColumnName"
+        >
+          <t-button variant="outline" shape="round">
+            <template #icon>
+              <table-large-plus-icon width="16px" />
+            </template>
+          </t-button>
+        </t-dropdown>
+      </t-popup>
+      <t-popup trigger="hover" placement="bottom" content="优化提示词">
+        <t-button variant="outline" shape="round" :disabled="!inputValue.trim().length" @click="handleShowPreferDialog">
+          <template #icon>
+            <filter3-icon />
+          </template>
+        </t-button>
+      </t-popup>
+    </template>
+
+    <!-- 操作按钮 -->
+    <template #action-list>
+      <t-button variant="outline" shape="circle" @click="handleClear">
+        <clear-icon />
+      </t-button>
+      <t-button
+        variant="outline"
+        shape="circle"
+        :disabled="recognizing"
+        :loading="recognizing"
+        @click="handleRecordClick"
+      >
+        <template #icon>
+          <div v-if="recording" class="recording-animation"></div>
+          <microphone1-icon v-else />
+        </template>
+      </t-button>
+      <t-button
+        variant="base"
+        theme="primary"
+        shape="round"
+        :disabled="!inputValue.trim().length"
+        @click="handleSendClick"
+        ><template #icon> <send-icon /> </template
+      ></t-button>
+    </template>
+    <!-- <template v-if="false" #footer>
         <div class="sender-footer">footer</div>
       </template> -->
-    </Sender>
-    <t-dialog header="提示词优化" confirm-btn="采用" v-model:visible="preferDialogVisible" width="400px" >
-      <div class="prefer-user-prompt-box">
-        <div class="content">
-          <div class="prefer-prompt-loader"></div>
-        </div>
+  </Sender>
+  <t-dialog v-model:visible="preferDialogVisible" header="提示词优化" confirm-btn="采用" width="400px">
+    <div class="prefer-user-prompt-box">
+      <div class="content">
+        <div class="prefer-prompt-loader"></div>
       </div>
-    </t-dialog>
+    </div>
+  </t-dialog>
 </template>
 <script setup lang="ts">
 import { AttachIcon, ClearIcon, Filter3Icon, Microphone1Icon, SendIcon } from 'tdesign-icons-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { FilesCardProps, FilesType } from 'vue-element-plus-x/types/FilesCard';
 
+import TableLargePlusIcon from '@/assets/chat/TableLargePlus.svg?component';
 import VoiceRecognition from '@/utils/voiceRecognition';
-import TableLargePlusIcon from '@/assets/chat/TableLargePlus.svg?component'
 
 /* const props = withDefaults(
   defineProps<{
@@ -126,8 +133,8 @@ const emit = defineEmits<{
 const inputValue = ref('');
 const preferDialogVisible = ref(false);
 function handleShowPreferDialog() {
-  MessagePlugin.info("open dialog")
-  preferDialogVisible.value = true
+  MessagePlugin.info('open dialog');
+  preferDialogVisible.value = true;
 }
 
 /* const value = computed({
@@ -299,11 +306,11 @@ function handleSubmit(value: string) {
   MessagePlugin.success(`发送${value}`);
 }
 
-function onRecordingChange(value: any) {
+function _onRecordingChange(value: any) {
   MessagePlugin.success(`录音${value}`);
 }
 
-function handleBeforeUpload(file: any) {
+function _handleBeforeUpload(file: any) {
   console.log('before', file);
   if (file.size > 1024 * 1024 * 200) {
     MessagePlugin.error('文件大小不能超过 200MB!');
@@ -338,7 +345,7 @@ async function handleHttpRequest(options: any) {
   }, 1000);
 }
 
-async function handleUploadDrop(files: any, props: any) {
+async function _handleUploadDrop(files: any, props: any) {
   console.log('drop', files);
   console.log('props', props);
 
@@ -354,7 +361,7 @@ async function handleUploadDrop(files: any, props: any) {
   return true;
 }
 
-function handleDeleteFileCard(value: any) {
+function _handleDeleteFileCard(value: any) {
   MessagePlugin.success('删除', value);
 }
 
@@ -368,19 +375,19 @@ function openOrCloseHeader(status = true) {
   }
 }
 
-function focusAll() {
+function _focusAll() {
   chatSenderRef.value.focus('all');
 }
 
-function focusStart() {
+function _focusStart() {
   chatSenderRef.value.focus('start');
 }
 
-function focusEnd() {
+function _focusEnd() {
   chatSenderRef.value.focus('end');
 }
 
-function blur() {
+function _blur() {
   chatSenderRef.value.blur();
 }
 function handleDeleteFile(id: number) {
@@ -390,25 +397,25 @@ function handleDeleteFile(id: number) {
 
 const dataColumnNameOptions = ref([
   {
-    content: "数据源1",
+    content: '数据源1',
     value: 1,
     children: ['列1', '列2', '列3'].map((col) => ({
       content: col,
-      value: "数据源1-" + col,
+      value: `数据源1-${col}`,
     })),
   },
   {
-    content: "数据源2",
+    content: '数据源2',
     value: 2,
     children: ['列1', '列2', '列3'].map((col) => ({
       content: col,
-      value: "数据源1-" + col,
+      value: `数据源1-${col}`,
     })),
-  }
-])
+  },
+]);
 
-function handleInsetColumnName(value) {
-  console.log(value)
+function handleInsetColumnName(value: any) {
+  console.log(value);
   inputValue.value += `@{${value.value}}`;
 }
 </script>
@@ -537,7 +544,6 @@ function handleInsetColumnName(value) {
     align-items: center;
     justify-content: center;
   }
-
 }
 
 /** 提示词优化loading */

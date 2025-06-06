@@ -1,6 +1,6 @@
 <template>
   <div class="chat-message-container" :class="{ 'is-new-session': props.sessionId === 0 }">
-    <div class="session-title" v-if="props.sessionId">{{ sessionName || '对话名称（详情获取）' }}</div>
+    <div v-if="props.sessionId" class="session-title">{{ sessionName || '对话名称（详情获取）' }}</div>
     <Welcome
       v-if="props.sessionId === 0"
       variant="borderless"
@@ -150,8 +150,8 @@ function handleCopy(item: any) {
   flex-direction: column;
   gap: 10px;
   padding: 10px;
-  .session-title{
-    color: var(--td-text-color-placeholder)
+  .session-title {
+    color: var(--td-text-color-placeholder);
   }
   &.is-new-session {
     justify-content: center;

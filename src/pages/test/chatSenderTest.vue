@@ -14,15 +14,15 @@
       variant="outline"
     ></t-chat-item>
     <hr /> -->
-    <el-sender v-model:value="value2" class="el-sender" />
+    <chatSender v-model:value="value2" class="el-sender" />
     <pre>{{ value2 }}</pre>
   </div>
 </template>
 <script setup lang="ts">
 import { ref } from 'vue';
 
-// import chatSender from '@/components/chat/chatSender.vue';
-import elSender from '@/components/chat/elSender.vue';
+import chatSender from '@/components/chat/chatSender.vue';
+// import elSender from '@/components/chat/elSender.vue';
 
 // const value = ref('');
 const value2 = ref('');

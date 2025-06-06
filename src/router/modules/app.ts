@@ -58,6 +58,32 @@ export default [
             zh_CN: '数据源',
           },
         },
+        children: [
+          {
+            path: 'list',
+            name: 'DataSourceList',
+            component: () => import('@/pages/engine/data/pages/dataSource.vue'),
+            meta: {
+              title: '数据源管理',
+            }
+          },
+          {
+            path: 'space',
+            name: 'DataSpace',
+            component: () => import('@/pages/engine/data/pages/dataSpace.vue'),
+            meta: {
+              title: '数据空间管理',
+            }
+          },
+          {
+            path: 'relation',
+            name: 'DataRelation',
+            component: () => import('@/pages/engine/data/pages/dataRelationshipMap.vue'),
+            meta: {
+              title: '数据关系网络',
+            }
+          },
+        ],
       },
       {
         path: 'template',

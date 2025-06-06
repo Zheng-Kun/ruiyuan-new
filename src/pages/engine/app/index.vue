@@ -37,7 +37,7 @@
 import { MessagePlugin } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
-import filterCardList from '@/components/card-list/filter-card-list.vue';
+import filterCardList from '@/components/card-list/filterCardList.vue';
 // import CardList from '@/components/card-list/index.vue';
 import { FilterData } from '@/components/card-list/types';
 
@@ -51,15 +51,15 @@ const fetchList = async (filterData: FilterData) => {
   await new Promise((resolve) => {
     setTimeout(resolve, 2000);
   });
-  const { page, pageSize, name } = filterData;
+  const { pageNum, pageSize } = filterData;
   const total = 50; // 总数据量
-  const start = (page - 1) * pageSize;
+  const start = (pageNum - 1) * pageSize;
   const end = Math.min(start + pageSize, total);
 
   return {
     list: Array.from({ length: end - start }, (_, i) => ({
       id: start + i + 1,
-      title: `卡片 ${start + i + 1}${name || ''}`,
+      title: `卡片 ${start + i + 1}`,
       desc: `这是卡片 ${start + i + 1} 的描述, 描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述描述`,
       tags: ['标签1', '标签2'],
       customField1: `自定义字段 ${start + i + 1}`,
@@ -67,9 +67,8 @@ const fetchList = async (filterData: FilterData) => {
       customField3: `自定义字段 ${start + i + 1}`,
       customField4: `自定义字段 ${start + i + 1}`,
     })),
-    totalPage: Math.ceil(total / pageSize),
-    current: page,
-    pageSize,
+    pages: Math.ceil(total / pageSize),
+    current: pageNum,
   };
 };
 
@@ -85,22 +84,22 @@ const operates = ref([
   { name: '删除', key: 'delete' },
 ]);
 
-const maskBtns = ref([
+/* const maskBtns = ref([
   { name: '查看详情', key: 'view', icon: 'search' },
   { name: '分享', key: 'share', icon: 'share' },
-]);
+]); */
 
-function handleCardClick(id) {
+function handleCardClick(id: number) {
   console.log('点击卡片', id);
   MessagePlugin.success(`点击卡片 ${id}`);
 }
 
-function handleMaskBtnClick(key, id) {
+function handleMaskBtnClick(key: string, id: number) {
   console.log('点击遮罩按钮', key, id);
   MessagePlugin.success(`点击遮罩按钮 ${key}:${id}`);
 }
 
-function handleOperateClick(value, id) {
+function handleOperateClick(value: string, id: number) {
   console.log('点击操作按钮', value, id);
   MessagePlugin.success(`点击操作按钮 ${value}:${id}`);
 }

@@ -23,8 +23,8 @@
     position: relative;
     height: 100%;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(6px);
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
   }
 }
 
@@ -48,13 +48,17 @@
       }
     }
     .login-btn {
-      background-color: var(--td-brand-color);
-      opacity: 0.3;
+      // background-color: var(--td-brand-color);
+      // opacity: 0.3;
       // :deep(.t-button__text) {
       //   opacity: 1;
       // }
+        background-color: transparent;
+        color: var(--td-brand-color);
       &:hover {
-        opacity: 1;
+        background-color: var(--td-brand-color);
+        color: white;
+        // opacity: 1;
       }
     }
   }

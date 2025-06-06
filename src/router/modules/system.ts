@@ -2,6 +2,7 @@ import { SettingIcon } from 'tdesign-icons-vue-next';
 import { shallowRef } from 'vue';
 
 import Layout from '@/layouts/index.vue';
+import { UserRoleEnum } from '@/constants'
 
 export default [
   {
@@ -26,6 +27,7 @@ export default [
           title: {
             zh_CN: '模型配置',
           },
+          roleCodes: [UserRoleEnum.level3],
         },
       },
       {

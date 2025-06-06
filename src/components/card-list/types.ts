@@ -1,5 +1,5 @@
 export interface FilterData {
-  page: number;
+  pageNum: number;
   pageSize: number;
-  [key: string]: any;
+  filters?: Record<string, any>;
 }

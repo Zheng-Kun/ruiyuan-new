@@ -14,7 +14,7 @@
         content: '',
         shape: 'circle',
         variant: 'base',
-      }
+      },
     }"
     hover
     :loading="tableLoading"
@@ -24,8 +24,7 @@
   ></t-table>
 </template>
 <script setup lang="ts">
-import { RefSymbol } from '@vue/reactivity';
-import { BaseTableCol, ButtonProps, DateRangePickerPanel, FilterValue, InputProps, TableProps } from 'tdesign-vue-next';
+import { BaseTableCol } from 'tdesign-vue-next';
 
 const props = defineProps<{
   id: number;
@@ -72,8 +71,8 @@ const data = ref<
   { id: 28, name: 'Jane Doe7', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
 ]);
 
-const columns = ref<BaseTableCol[]>([
-  { colKey: 'serial-number', title: '序号', width: 100, align: 'center'},
+const columns = ref<any[]>([
+  { colKey: 'serial-number', title: '序号', width: 100, align: 'center' },
   { colKey: 'id', title: 'ID', width: 100, align: 'center' },
   { colKey: 'name', title: 'Name', width: 150, align: 'center' },
   { colKey: 'age', title: 'Age', width: 100, align: 'center' },
@@ -81,7 +80,7 @@ const columns = ref<BaseTableCol[]>([
   { colKey: 'date', title: 'Date', width: 150, align: 'center' },
 ]);
 
-const displayColumns = ref([]);
+const displayColumns: Ref<string[]> = ref([]);
 
 async function fetchTableData() {
   tableLoading.value = true;
@@ -89,8 +88,10 @@ async function fetchTableData() {
   // 生成 columns 与 data
   // 处理 displayColumns
   // 处理pagination
-  displayColumns.value = columns.value.map((col) => col.colKey);
-  await new Promise((resolve) => setTimeout(resolve, 1000)); // 模拟异步请求
+  displayColumns.value = columns.value.map((col) => col.colKey as string) as string[];
+  await new Promise<void>((resolve) => {
+    setTimeout(resolve, 1000);
+  }); // 模拟异步请求
   tableLoading.value = false;
 }
 
@@ -99,7 +100,7 @@ onMounted(() => {
 });
 watch(
   () => props.id,
-  (val) => {
+  (_) => {
     // TODO setData
     fetchTableData();
   },

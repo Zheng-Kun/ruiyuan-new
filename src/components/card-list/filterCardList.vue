@@ -51,15 +51,19 @@ import { FilterData } from './types';
 
 const props = withDefaults(
   defineProps<{
-    selectedIds: number[];
-    fetchList: (filterData: FilterData) => Promise<any>;
-    pageSize: number;
-    infoConfig: any[];
+    selectedIds?: number[];
+    fetchList: (filterData: FilterData) => Promise<{
+      list: any[];
+      pages: number;
+      current: number;
+    }>;
+    pageSize?: number;
+    infoConfig?: any[];
     operates?: any[];
     enableClick?: boolean;
     maskBtns?: any[];
     canSelect?: boolean;
-    filterForm: Record<string, any>;
+    filterForm?: Record<string, any>;
   }>(),
   {
     selectedIds: () => [],
@@ -108,12 +112,12 @@ async function fetchNextPage() {
   try {
     const {
       list: newList,
-      totalPage: totalPages,
+      pages,
       current,
-    } = await props.fetchList({ page: currentPage.value, pageSize: props.pageSize, ...searchFilterForm.value });
+    } = await props.fetchList({ pageNum: currentPage.value, pageSize: props.pageSize, filters: props.filterForm });
     list.value = [...list.value, ...newList].map((el) => ({ ...el, selected: false }));
     currentPage.value = current;
-    totalPage.value = totalPages;
+    totalPage.value = pages;
 
     if (currentPage.value >= totalPage.value) {
       hasMore.value = false;
@@ -163,6 +167,7 @@ onMounted(() => {
 function refreshList() {
   currentPage.value = 1;
   totalPage.value = 0;
+  hasMore.value = true;
   list.value = [];
   fetchNextPage();
 }

@@ -36,6 +36,7 @@
     "no-plusplus": "off",
     "no-param-reassign": "off",
     "no-shadow": "off",
+    "no-underscore-dangle": "off",
     "guard-for-in": "off",
 
     "import/extensions": "off",
@@ -49,14 +50,14 @@
     "vue-scoped-css/enforce-style-type": "off",
 
     "@typescript-eslint/no-unused-vars": [
-      "error",
+      "warn",
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_"
       }
     ],
     "no-unused-vars": [
-      "error",
+      "warn",
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_"
@@ -79,7 +80,7 @@
         "vue/multi-word-component-names": 0,
         "vue/no-reserved-props": 0,
         "vue/no-v-html": 0,
-        "vue-scoped-css/enforce-style-type": ["error", { "allows": ["scoped", "global"] }]
+        // "vue-scoped-css/enforce-style-type": ["error", { "allows": ["scoped", "global"] }]
       }
     },
     {
