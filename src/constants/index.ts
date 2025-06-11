@@ -20,10 +20,25 @@ export enum DropdownKeyEnum {
 
 // 用户角色
 export enum UserRoleEnum {
-  admin = 0, // 超级管理员 所有权限
-  level2 = 1, // 管理员 可创建；可编辑和分配可见范围内的权限
-  level3 = 2, // 创作者 可创建；可编辑和分配自己创建的空间权限
+  admin = '0', // 超级管理员 所有权限
+  level2 = '1', // 创作者 可创建；可编辑和分配可见范围内的权限
+  level3 = '2', //  普通用户  只能查看
 }
+
+export const userRoleOptions = [
+  {
+    label: '超级管理员',
+    value: UserRoleEnum.admin,
+  },
+  {
+    label: '创作者',
+    value: UserRoleEnum.level2,
+  },
+  {
+    label: '普通用户',
+    value: UserRoleEnum.level3,
+  },
+];
 
 // 表单文本长度限制(MaxLength)
 export const formTextLengthLimit = {

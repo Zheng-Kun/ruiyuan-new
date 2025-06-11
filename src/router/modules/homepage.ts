@@ -16,6 +16,7 @@ export default [
       },
       icon: shallowRef(DashboardIcon),
       orderNo: 0,
+      single: true,
     },
     children: [
       {

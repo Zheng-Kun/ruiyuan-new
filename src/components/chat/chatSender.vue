@@ -102,6 +102,7 @@
 <script setup lang="ts">
 import { AttachIcon, ClearIcon, Filter3Icon, Microphone1Icon, SendIcon } from 'tdesign-icons-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
+import { provide } from 'vue';
 import type { FilesCardProps, FilesType } from 'vue-element-plus-x/types/FilesCard';
 
 import TableLargePlusIcon from '@/assets/chat/TableLargePlus.svg?component';
@@ -126,7 +127,7 @@ const emit = defineEmits<{
     e: 'send',
     value: {
       question: string;
-      fileIds: number[];
+      fileIds: string[];
     },
   ): void;
 }>();
@@ -157,7 +158,7 @@ const preferUserPromptLoading = ref(false); // 优化提示词
 const recordInstance = ref();
 
 type SelfFilesCardProps = FilesCardProps & {
-  id?: number;
+  id?: string;
 };
 
 const colorMap: Record<FilesType, string> = {
@@ -390,7 +391,7 @@ function _focusEnd() {
 function _blur() {
   chatSenderRef.value.blur();
 }
-function handleDeleteFile(id: number) {
+function handleDeleteFile(id: string) {
   // todo
   console.log('delete file', id);
 }
@@ -418,6 +419,17 @@ function handleInsetColumnName(value: any) {
   console.log(value);
   inputValue.value += `@{${value.value}}`;
 }
+
+const insertTextIntoInput = (text: string) => {
+  inputValue.value += text;
+};
+
+// provide 方法给祖先组件使用
+provide('insertTextIntoInput', insertTextIntoInput);
+
+defineExpose({
+  insertTextIntoInput,
+});
 </script>
 
 <style scoped lang="less">

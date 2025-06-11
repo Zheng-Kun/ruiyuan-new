@@ -1,5 +1,6 @@
 <template>
   <div class="data-source-container">
+    {{ dataSourcePreviewVisible }}
     <filterCardList
       :fetch-list="fetchList"
       :page-size="10"
@@ -24,6 +25,7 @@
         </div>
       </template>
     </filterCardList>
+    <dataSourceDetailPreviewDrawer :id="dataSourcePreviewId" v-model:visible="dataSourcePreviewVisible" />
   </div>
 </template>
 <script setup lang="ts">
@@ -32,19 +34,29 @@ import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 import dataSourceApi from '@/api/dataSource';
 import filterCardList from '@/components/card-list/filterCardList.vue';
 import { FilterData } from '@/components/card-list/types';
+import dataSourceDetailPreviewDrawer from '@/components/data-source/dataSourceDetailPreviewDrawer.vue';
 
 const filterForm = reactive({
   tableName: '',
-  spaceId: null as null | number, // number
+  spaceId: '',
 });
 
+const dataSourcePreviewVisible = ref(false);
+const dataSourcePreviewId = ref('');
+
 const spaceOptions = ref([
-  { label: '数据空间1', value: 1 },
-  { label: '数据空间2', value: 2 },
-  { label: '数据空间3', value: 3 },
+  { label: '数据空间1', value: '1' },
+  { label: '数据空间2', value: '2' },
+  { label: '数据空间3', value: '3' },
 ]);
 
-const infoConfig = ref([{ label: '数据空间', key: 'space' }]);
+const infoConfig = ref([
+  { label: '数据空间', key: 'space' },
+  {
+    label: 'Nickname',
+    key: 'tableRemarkName',
+  },
+]);
 
 async function fetchList(filterData: FilterData) {
   return dataSourceApi.getList(filterData).then((data) => {
@@ -53,9 +65,10 @@ async function fetchList(filterData: FilterData) {
       list: data.records.map((item: any) => ({
         ...item,
         title: item.tableName,
-        desc: item.tableDesc,
+        // desc: item.tableDesc || '暂无描述',
         id: item.tableId,
         space: '数据空间',
+        tags: ['ceshi', '测试', '测试数据源'],
       })),
     };
   });
@@ -67,10 +80,10 @@ function handleCardClick() {
 
 const operates = ref([
   { name: '编辑', key: 'edit' },
-  { name: '查看元数据', key: 'edit' },
+  { name: '查看元数据', key: 'viewMetadata' },
   { name: '删除', key: 'delete' },
 ]);
-function handleOperateClick(value: string, id: number) {
+function handleOperateClick(value: string, id: string) {
   switch (value) {
     case 'edit':
       console.log(`编辑数据源 ID: ${id}`);
@@ -81,13 +94,15 @@ function handleOperateClick(value: string, id: number) {
       break;
     case 'viewMetadata':
       console.log(`查看元数据 ID: ${id}`);
+      dataSourcePreviewId.value = id;
+      dataSourcePreviewVisible.value = true;
       break;
     default:
       console.warn(`未知操作: ${value}`);
   }
 }
 
-function handleDelete(id: number) {
+function handleDelete(id: string) {
   const deleteConfirm = DialogPlugin.confirm({
     header: '删除数据源',
     theme: 'warning',

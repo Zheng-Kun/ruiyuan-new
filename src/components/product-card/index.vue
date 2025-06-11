@@ -69,7 +69,7 @@ import type { PropType } from 'vue';
 import { t } from '@/locales';
 
 export interface CardProductType {
-  type: number;
+  type: string;
   isSetup: boolean;
   description: string;
   name: string;

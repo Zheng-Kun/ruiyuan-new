@@ -4,7 +4,7 @@ export interface ListResult {
 export interface ListModel {
   adminName: string;
   amount: string;
-  contractType: number;
+  contractType: string;
   index: number;
   name: string;
   no: string;

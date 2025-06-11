@@ -80,20 +80,25 @@
         </t-col>
         <!-- @focus="fetchProjectOptions" -->
       </t-row>
-      <div class="bottom-container" :class="{ 'show-preview': activeChat !== 0,'hide-preview': activeChat === 0 }">
+      <div class="bottom-container" :class="{ 'show-preview': !activeChat, 'hide-preview': !!activeChat }">
         <chat-message
+          ref="chatMessageRef"
           type="engine"
           :session-id="activeChat"
           class="chat-content"
           :class="{
-            'is-new-session': activeChat === 0,
+            'is-new-session': !!activeChat,
           }"
         ></chat-message>
-        <div v-if="environment.versionId && activeChat !== 0" class="preview-container">预览位置</div>
+        <div v-if="environment.versionId && !activeChat" class="preview-container">预览位置</div>
       </div>
     </div>
     <!-- <div>{{ activeChat }}</div> -->
-    <dataSourcePreviewDrawer v-model:visible="dataSourcePreviewVisible" :list="dataSourcePreviewList" />
+    <dataSourcePreviewDrawer
+      v-model:visible="dataSourcePreviewVisible"
+      :list="dataSourcePreviewList"
+      @table-header-click="handleInsert"
+    />
   </div>
 </template>
 <script setup lang="ts">
@@ -104,7 +109,7 @@ import commonApi from '@/api/common';
 import ManageSearchRoundIcon from '@/assets/app/ManageSearchRounded.svg?component';
 import ChatMessage from '@/components/chat/chatMessage.vue';
 import ChatSideBar from '@/components/chat/chatSideBar.vue';
-import dataSourcePreviewDrawer from '@/components/data-source/dataSourcePreviewDrawer.vue';
+import dataSourcePreviewDrawer from '@/components/data-source/multiDataSourcePreviewDrawer.vue';
 import { DropdownKeyEnum } from '@/constants';
 
 const props = withDefaults(
@@ -114,26 +119,24 @@ const props = withDefaults(
   }>(),
   {
     mode: 'edit',
-    id: '0',
+    id: '',
   },
 );
 
-const id = computed(() => {
-  return +props.id;
-});
-
-const activeChat = ref(1);
+const activeChat = ref('1');
 interface Options {
   label: string;
-  value: number;
+  value: string;
 }
 
+const chatMessageRef = ref<InstanceType<typeof ChatMessage> | null>(null);
+
 const environment = reactive({
-  projectId: 1,
-  appId: 1,
-  versionId: 1,
-  dataSourceIds: [] as number[],
-  templateId: 1,
+  projectId: '1',
+  appId: '1',
+  versionId: '1',
+  dataSourceIds: [] as string[],
+  templateId: '1',
 });
 
 const dataSourcePreviewVisible = ref(false);
@@ -154,39 +157,39 @@ onMounted(() => {
 });
 
 const projectOptions = ref<Options[]>([
-  { label: '项目1afdadfdsdf', value: 1 },
-  { label: '项目2', value: 2 },
-  { label: '项目3', value: 3 },
-  { label: '项目4', value: 4 },
-  { label: '项目5', value: 5 },
+  { label: '项目1afdadfdsdf', value: '1' },
+  { label: '项目2', value: '2' },
+  { label: '项目3', value: '3' },
+  { label: '项目4', value: '4' },
+  { label: '项目5', value: '5' },
 ]);
 const appOptions = ref<Options[]>([
-  { label: '应用1adfasdfasdfad', value: 1 },
-  { label: '应用2', value: 2 },
-  { label: '应用3', value: 3 },
-  { label: '应用4', value: 4 },
-  { label: '应用5', value: 5 },
+  { label: '应用1adfasdfasdfad', value: '1' },
+  { label: '应用2', value: '2' },
+  { label: '应用3', value: '3' },
+  { label: '应用4', value: '4' },
+  { label: '应用5', value: '5' },
 ]);
 const versionOptions = ref<Options[]>([
-  { label: '版本1adfadfasdfas', value: 1 },
-  { label: '版本2', value: 2 },
-  { label: '版本3', value: 3 },
-  { label: '版本4', value: 4 },
-  { label: '版本5', value: 5 },
+  { label: '版本1adfadfasdfas', value: '1' },
+  { label: '版本2', value: '2' },
+  { label: '版本3', value: '3' },
+  { label: '版本4', value: '4' },
+  { label: '版本5', value: '5' },
 ]);
 const dataSourceOptions = ref<Options[]>([
-  { label: '数据源1adfafdasdfsdf', value: 1 },
-  { label: '数据源2', value: 2 },
-  { label: '数据源3', value: 3 },
-  { label: '数据源4', value: 4 },
-  { label: '数据源5', value: 5 },
+  { label: '数据源1adfafdasdfsdf', value: '1' },
+  { label: '数据源2', value: '12' },
+  { label: '数据源3', value: '13' },
+  { label: '数据源4', value: '4' },
+  { label: '数据源5', value: '5' },
 ]);
 const templateOptions = ref<Options[]>([
-  { label: '分析模板1adfadfasdfafd', value: 1 },
-  { label: '分析模板2', value: 2 },
-  { label: '分析模板3', value: 3 },
-  { label: '分析模板4', value: 4 },
-  { label: '分析模板5', value: 5 },
+  { label: '分析模板1adfadfasdfafd', value: '1' },
+  { label: '分析模板2', value: '2' },
+  { label: '分析模板3', value: '3' },
+  { label: '分析模板4', value: '4' },
+  { label: '分析模板5', value: '5' },
 ]);
 
 function fetchProjectOptions() {
@@ -221,16 +224,27 @@ function getTemporaryAppId() {
 }
 
 async function init() {
+  console.log('初始化编辑器环境', props.mode, props.id);
   if (props.mode === 'edit') {
-    environment.appId = id.value;
+    environment.appId = props.id;
     await fetchAppDetail();
     // TODO 改为详情中的detail
-    activeChat.value = 0;
+    activeChat.value = '';
   } else {
-    activeChat.value = 0;
+    activeChat.value = '';
     getTemporaryAppId();
   }
   fetchOptions();
+}
+
+function handleInsert(value: string) {
+  console.log('headerClick:', value);
+  // 通过多级 ref 拿到 chatSender 实例
+  const chatSender = chatMessageRef.value?.chatSenderRef;
+  if (chatSender && chatSender.insertTextIntoInput) {
+    console.log('插入文本:', value);
+    chatSender.insertTextIntoInput(value);
+  }
 }
 </script>
 
@@ -312,7 +326,7 @@ async function init() {
         border-radius: 10px;
         &.is-new-session {
           background-color: var(--td-bg-color-page);
-          box-shadow: none;;
+          box-shadow: none;
         }
       }
       .preview-container {

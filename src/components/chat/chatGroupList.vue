@@ -42,20 +42,20 @@ onMounted(() => {
 
 interface ChatItem {
   title: string;
-  id: number;
+  id: string;
   time: string;
   pinned?: boolean;
 }
 
 const props = defineProps<{
   type: string;
-  activeId: number;
+  activeId: string;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:activeId', id: number): void;
-  (e: 'edit', id: number, title: string): void;
-  (e: 'delete', id: number): void;
+  (e: 'update:activeId', id: string): void;
+  (e: 'edit', id: string, title: string): void;
+  (e: 'delete', id: string): void;
 }>();
 
 const activeId = computed({
@@ -157,7 +157,7 @@ const editTitleData = reactive({
   title: '',
 });
 
-function handleDeleteItem(id: number) {
+function handleDeleteItem(id: string) {
   // 后端删除
   const deleteConfirm = DialogPlugin({
     header: '删除会话',
@@ -182,7 +182,7 @@ function handleDeleteItem(id: number) {
   });
 }
 
-function deleteItem(id: number) {
+function deleteItem(id: string) {
   chatList.value.splice(
     chatList.value.findIndex((i) => i.id === id),
     1,

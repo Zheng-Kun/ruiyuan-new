@@ -1,5 +1,8 @@
 <template>
-  <div class="data-space-container">数据空间管理</div>
+  <div class="data-space-container">
+    <div class="header"></div>
+    <div class="content"></div>
+  </div>
 </template>
 <script setup lang="ts"></script>
 

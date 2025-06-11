@@ -51,11 +51,11 @@ const leftSideOpen = ref(true);
 
 const props = defineProps<{
   type: string;
-  activeChat: number;
+  activeChat: string; // id
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:activeChat', id: number): void;
+  (e: 'update:activeChat', id: string): void;
 }>();
 
 const activeChat = computed({
@@ -66,7 +66,7 @@ const activeChat = computed({
 });
 
 function handleCreateNewSession() {
-  activeChat.value = 0; // Reset to a new session
+  activeChat.value = ''; // Reset to a new session
 }
 </script>
 

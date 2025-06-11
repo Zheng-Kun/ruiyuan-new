@@ -1,8 +1,8 @@
 <template>
-  <div class="chat-message-container" :class="{ 'is-new-session': props.sessionId === 0 }">
+  <div class="chat-message-container" :class="{ 'is-new-session': !!props.sessionId }">
     <div v-if="props.sessionId" class="session-title">{{ sessionName || '对话名称（详情获取）' }}</div>
     <Welcome
-      v-if="props.sessionId === 0"
+      v-if="props.sessionId"
       variant="borderless"
       title="欢迎使用 小瑞助手"
       description="生成数据图表，获取决策建议"
@@ -75,7 +75,7 @@
         </div>
       </template>
     </BubbleList>
-    <chat-sender class="sender" />
+    <chat-sender ref="chatSenderRef" class="sender" />
   </div>
 </template>
 <script setup lang="ts">
@@ -86,9 +86,14 @@ import type { BubbleListItemProps, BubbleListProps } from 'vue-element-plus-x/ty
 
 import ChatSender from '@/components/chat/chatSender.vue';
 
+const chatSenderRef = ref<InstanceType<typeof ChatSender>>();
+defineExpose({
+  chatSenderRef,
+});
+
 const props = defineProps<{
   type: string;
-  sessionId: number;
+  sessionId: string;
   sessionName?: string;
 }>();
 
@@ -98,7 +103,7 @@ onMounted(() => {
 });
 
 type listType = BubbleListItemProps & {
-  key: number;
+  key: string;
   role: 'user' | 'ai';
 };
 

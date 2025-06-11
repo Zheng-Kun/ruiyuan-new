@@ -1,8 +1,8 @@
 import { SettingIcon } from 'tdesign-icons-vue-next';
 import { shallowRef } from 'vue';
 
+import { UserRoleEnum } from '@/constants';
 import Layout from '@/layouts/index.vue';
-import { UserRoleEnum } from '@/constants'
 
 export default [
   {

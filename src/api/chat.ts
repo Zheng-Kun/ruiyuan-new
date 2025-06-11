@@ -88,16 +88,16 @@ class ChatApi {
    */
   chat(
     data: {
-      sessionId?: number; // 如果为空或0，则创建新会话
+      sessionId?: string; // 如果为空或0，则创建新会话
       question: string; // 对话内容
-      files?: number[]; // 文件ids
+      files?: string[]; // 文件ids
       context: {
         // 本次消息的上下文
-        projectId: number;
-        appId: number;
-        versionId: number;
-        dataSourceIds: number[];
-        templateId: number;
+        projectId: string;
+        appId: string;
+        versionId: string;
+        dataSourceIds: string[];
+        templateId: string;
       };
     },
     type: string,
@@ -114,16 +114,16 @@ class ChatApi {
    */
   preferPrompt(
     data: {
-      sessionId?: number;
+      sessionId?: string;
       question: string; // 对话内容
-      files?: number[]; // 文件ids
+      files?: string[]; // 文件ids
       context: {
         // 本次消息的上下文
-        projectId: number;
-        appId: number;
-        versionId: number;
-        dataSourceIds: number[];
-        templateId: number;
+        projectId: string;
+        appId: string;
+        versionId: string;
+        dataSourceIds: string[];
+        templateId: string;
       };
     },
     type: string,

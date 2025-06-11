@@ -17,10 +17,10 @@ class DataSourceApi {
 
   /**
    * @description: 获取数据源预览数据
-   * @param {number} id
+   * @param {string} id
    * @return {*}
    */
-  getTableData(id: number) {
+  getTableData(id: string) {
     return request.get({
       url: `/datasource/preview/${id}`,
     });
@@ -28,10 +28,10 @@ class DataSourceApi {
 
   /**
    * @description: 导出数据源
-   * @param {number} id
+   * @param {string} id
    * @return {*}
    */
-  exportDataSource(id: number) {
+  exportDataSource(id: string) {
     return request.get({
       url: '/datasource/export',
       params: { tableId: id },
@@ -41,10 +41,10 @@ class DataSourceApi {
 
   /**
    * @description: 删除数据源
-   * @param {number} id
+   * @param {string} id
    * @return {*}
    */
-  deleteItem(id: number) {
+  deleteItem(id: string) {
     return request.delete({
       url: `/datasource/${id}`,
     });

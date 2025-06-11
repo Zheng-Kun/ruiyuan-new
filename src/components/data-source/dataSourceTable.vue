@@ -21,87 +21,158 @@
     :pagination="pagination"
     bordered
     height="calc(100% - 64px)"
-  ></t-table>
+  >
+    <template v-for="item in columns.filter((col) => col.colKey !== 'serial-number')" #[item.title] :key="item.colKey">
+      <t-tooltip v-if="props.enableHeaderClick" placement="top" :content="`双击引用列名: ${item.colKey}`">
+        <div class="clickable-title header-title" @dblclick="handleTitleDblClick(item)">{{ item.title }}</div>
+      </t-tooltip>
+      <div v-else class="header-title">{{ item.title }}</div>
+    </template>
+  </t-table>
 </template>
 <script setup lang="ts">
-import { BaseTableCol } from 'tdesign-vue-next';
+import { BaseTableCol, MessagePlugin } from 'tdesign-vue-next';
+
+import dataSourceApi from '@/api/dataSource';
 
 const props = defineProps<{
-  id: number;
+  id: string;
+  enableHeaderClick?: boolean; // 是否启用列标题双击事件
 }>();
 
 const pagination = reactive({
   defaultPageSize: 10,
   defaultCurrent: 1,
-  // pageSize: 10,
-  // total: ,
-  total: 24,
+  total: 0,
 });
 
 const tableLoading = ref(false);
+
+const emit = defineEmits<{
+  (e: 'tableHeaderClick', value: any): void;
+}>();
 
 const data = ref<
   {
     [key: string]: any;
   }[]
->([
-  { id: 1, name: 'Jane Doe', age: 30, email: 'janedoe@foxmail.com', date: '2025-10-01' },
-  { id: 2, name: 'Jane Doe1', age: 312, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 3, name: 'Jane Doe2', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 4, name: 'Jane Doe3', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 5, name: 'Jane Doe4', age: 10, email: 'janedoe@foxmail.com', date: '2024-05-03' },
-  { id: 6, name: 'Jane Doe5', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 7, name: 'Jane Doe6', age: 340, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 8, name: 'Jane Doe7', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 11, name: 'Jane Doe', age: 30, email: 'janedoe@foxmail.com', date: '2025-10-01' },
-  { id: 21, name: 'Jane Doe', age: 30, email: 'janedoe@foxmail.com', date: '2025-10-01' },
-  { id: 12, name: 'Jane Doe1', age: 312, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 22, name: 'Jane Doe1', age: 312, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 13, name: 'Jane Doe2', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 23, name: 'Jane Doe2', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 14, name: 'Jane Doe3', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 24, name: 'Jane Doe3', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 15, name: 'Jane Doe4', age: 10, email: 'janedoe@foxmail.com', date: '2024-05-03' },
-  { id: 25, name: 'Jane Doe4', age: 10, email: 'janedoe@foxmail.com', date: '2024-05-03' },
-  { id: 16, name: 'Jane Doe5', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 26, name: 'Jane Doe5', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 17, name: 'Jane Doe6', age: 340, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 27, name: 'Jane Doe6', age: 340, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 18, name: 'Jane Doe7', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-  { id: 28, name: 'Jane Doe7', age: 30, email: 'janedoe@foxmail.com', date: '2023-10-01' },
-]);
+>([]);
 
-const columns = ref<any[]>([
-  { colKey: 'serial-number', title: '序号', width: 100, align: 'center' },
-  { colKey: 'id', title: 'ID', width: 100, align: 'center' },
-  { colKey: 'name', title: 'Name', width: 150, align: 'center' },
-  { colKey: 'age', title: 'Age', width: 100, align: 'center' },
-  { colKey: 'email', title: 'Email', width: 200, align: 'center' },
-  { colKey: 'date', title: 'Date', width: 150, align: 'center' },
-]);
+const columns = ref<any[]>([{ colKey: 'serial-number', title: '序号', width: 100, align: 'center' }]);
 
 const displayColumns: Ref<string[]> = ref([]);
 
 async function fetchTableData() {
+  console.log('Fetching table data for ID:', props.id);
+  if (!props.id) return;
+
   tableLoading.value = true;
-  // 请求数据
-  // 生成 columns 与 data
-  // 处理 displayColumns
-  // 处理pagination
-  displayColumns.value = columns.value.map((col) => col.colKey as string) as string[];
-  await new Promise<void>((resolve) => {
-    setTimeout(resolve, 1000);
-  }); // 模拟异步请求
-  tableLoading.value = false;
+  try {
+    const response = await dataSourceApi.getTableData(props.id);
+
+    // 处理表格数据
+    if (response.data && response.data.records) {
+      data.value = response.data.records;
+      pagination.total = response.data.total || 0;
+    }
+
+    // 动态生成列配置
+    if (response.columns && response.columns.length > 0) {
+      columns.value = [
+        { colKey: 'serial-number', title: '序号', width: 100, align: 'center' },
+        ...response.columns.map((col: any) => ({
+          colKey: col.columnName,
+          title: `title${col.columnName}`,
+          width: getColumnWidth(col.dataType),
+          align: 'center',
+          ellipsis: true,
+          // 可以根据数据类型设置不同的渲染方式
+          ...(col.dataType && getColumnConfig(col.dataType)),
+        })),
+      ];
+    }
+    // 设置显示的列
+    displayColumns.value = columns.value.map((col) => col.colKey as string);
+  } catch (error) {
+    console.error('获取表格数据失败:', error);
+    data.value = [];
+    pagination.total = 0;
+    columns.value = [{ colKey: 'serial-number', title: '序号', width: 100, align: 'center' }];
+    displayColumns.value = ['serial-number'];
+  } finally {
+    tableLoading.value = false;
+  }
+}
+
+// 根据数据类型设置列宽
+function getColumnWidth(dataType: string): number {
+  const typeWidthMap: { [key: string]: number } = {
+    string: 150,
+    long: 120,
+    integer: 100,
+    double: 120,
+    float: 120,
+    bigdecimal: 130,
+    localdatetime: 180,
+    localdate: 120,
+    localtime: 100,
+    boolean: 80,
+    'byte[]': 100,
+    biginteger: 140,
+  };
+
+  const normalizedType = dataType?.toLowerCase() || '';
+  for (const [type, width] of Object.entries(typeWidthMap)) {
+    if (normalizedType.includes(type)) {
+      return width;
+    }
+  }
+  return 150; // 默认宽度
+}
+
+// 根据数据类型设置列配置
+function getColumnConfig(dataType: string) {
+  const normalizedType = dataType?.toLowerCase() || '';
+
+  // 数字类型右对齐
+  if (
+    ['long', 'integer', 'double', 'float', 'bigdecimal', 'biginteger'].some((type) => normalizedType.includes(type))
+  ) {
+    return { align: 'right' };
+  }
+
+  // 布尔类型居中
+  if (normalizedType.includes('boolean')) {
+    return { align: 'center' };
+  }
+
+  // 时间类型居中
+  if (
+    normalizedType.includes('localdatetime') ||
+    normalizedType.includes('localdate') ||
+    normalizedType.includes('localtime')
+  ) {
+    return { align: 'center' };
+  }
+
+  // 其他默认左对齐
+  return { align: 'left' };
+}
+
+function handleTitleDblClick(col: BaseTableCol) {
+  console.log('双击列标题:', col);
+  // 可以在这里添加双击列标题的逻辑
+  MessagePlugin.success(`双击列标题: ${col.title}`);
+  emit('tableHeaderClick', col);
 }
 
 onMounted(() => {
   fetchTableData();
 });
+
 watch(
   () => props.id,
-  (_) => {
-    // TODO setData
+  () => {
     fetchTableData();
   },
 );
@@ -112,6 +183,22 @@ watch(
   width: 100%;
   height: 100%;
   position: relative;
+  .clickable-title {
+    cursor: pointer;
+    // color: var(--td-text-color-secondary);
+    // border-radius: 4px;
+    &:hover {
+      // color: var(--td-text-color-primary);
+      // border: solid 1px var(--td-text-color-placeholder);
+      background-color: var(--td-bg-color-secondarycontainer-hover);
+    }
+  }
+  :deep(.t-table__header th) {
+    padding: 0;
+    .header-title {
+      padding: 10px;
+    }
+  }
   :deep(.t-table__column-controller-trigger) {
     position: absolute;
     top: 10px;

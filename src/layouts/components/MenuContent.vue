@@ -17,7 +17,13 @@
           {{ renderMenuTitle(item.title) }}
         </t-menu-item>
       </template>
-      <t-submenu v-else :name="item.path" :value="item.path" :title="/* item.path +  */ renderMenuTitle(item.title)">
+      <t-submenu
+        v-else
+        :name="item.path"
+        :value="item.path"
+        :title="/* item.path +  */ renderMenuTitle(item.title)"
+        @click="router.push({ path: item.path })"
+      >
         <template #icon>
           <component :is="menuIcon(item)" class="t-icon"></component>
         </template>
@@ -31,7 +37,7 @@ import type { PropType } from 'vue';
 import { computed } from 'vue';
 
 import { useLocale } from '@/locales/useLocale';
-import { getActive } from '@/router';
+import router, { getActive } from '@/router';
 import type { MenuRoute } from '@/types/interface';
 
 type ListItemType = MenuRoute & { icon?: string };
@@ -39,7 +45,7 @@ type ListItemType = MenuRoute & { icon?: string };
 const { navData } = defineProps({
   navData: {
     type: Array as PropType<MenuRoute[]>,
-    default: () => [],
+    default: (): MenuRoute[] => [],
   },
 });
 

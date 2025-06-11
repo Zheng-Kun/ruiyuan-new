@@ -1,6 +1,6 @@
 <template>
   <router-view v-if="!isRefreshing" v-slot="{ Component }">
-    <transition name="fade" mode="out-in">
+    <transition name="fade" mode="in-out">
       <!-- <keep-alive :include="aliveViews"> -->
       <component :is="Component" />
       <!-- </keep-alive> -->
@@ -10,9 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import isBoolean from 'lodash/isBoolean';
-import isUndefined from 'lodash/isUndefined';
-import type { ComputedRef } from 'vue';
+// import isBoolean from 'lodash/isBoolean';
+// import isUndefined from 'lodash/isUndefined';
+// import type { ComputedRef } from 'vue';
 import { computed } from 'vue';
 
 import FramePage from '@/layouts/frame/index.vue';
@@ -30,7 +30,7 @@ import { useTabsRouterStore } from '@/store';
 //   return router.currentRoute.value.fullPath;
 // });
 
-const aliveViews = computed(() => {
+/* const aliveViews = computed(() => {
   const tabsRouterStore = useTabsRouterStore();
   const { tabRouters } = tabsRouterStore;
   return tabRouters
@@ -40,7 +40,7 @@ const aliveViews = computed(() => {
       return route.isAlive && isRouteKeepAlive;
     })
     .map((route) => route.name);
-}) as ComputedRef<string[]>;
+}) as ComputedRef<string[]>; */
 
 const isRefreshing = computed(() => {
   const tabsRouterStore = useTabsRouterStore();

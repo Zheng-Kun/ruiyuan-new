@@ -7,7 +7,7 @@ export default [
   {
     path: '/engine',
     component: Layout,
-    redirect: '/engine/app',
+    redirect: '/engine/app/list',
     name: 'Engine',
     meta: {
       title: {
@@ -19,27 +19,40 @@ export default [
     },
     children: [
       {
-        path: 'app',
+        path: 'app/list',
         name: 'EngineApp',
         component: () => import('@/pages/engine/app/index.vue'),
         meta: {
           title: {
-            zh_CN: '应用',
+            zh_CN: '应用管理',
           },
         },
       },
       {
-        path: 'app/:mode/:id',
-        name: 'EngineAppEdit',
+        path: 'app/create',
+        name: 'EngineAppCreate',
         component: () => import('@/pages/engine/app/editAgent.vue'),
-        props: true,
+        props: (route: any) => ({ mode: 'create', id: '0', ...route.params }),
         meta: {
           title: {
-            zh_CN: '生成应用',
+            zh_CN: '创建应用',
           },
         },
       },
       {
+        path: 'app/edit/:id',
+        name: 'EngineAppEdit',
+        component: () => import('@/pages/engine/app/editAgent.vue'),
+        props: (route: any) => ({ mode: 'edit', id: route.params.id, ...route.params }),
+        // props: true,
+        meta: {
+          title: {
+            zh_CN: '编辑应用',
+          },
+          hidden: true,
+        },
+      },
+      /* {
         path: 'project',
         name: 'EngineProject',
         component: () => import('@/pages/engine/project/index.vue'),
@@ -48,7 +61,7 @@ export default [
             zh_CN: '项目',
           },
         },
-      },
+      }, */
       {
         path: 'data',
         name: 'EngineData',
@@ -58,6 +71,7 @@ export default [
             zh_CN: '数据源',
           },
         },
+        redirect: '/engine/data/list',
         children: [
           {
             path: 'list',
@@ -65,7 +79,7 @@ export default [
             component: () => import('@/pages/engine/data/pages/dataSource.vue'),
             meta: {
               title: '数据源管理',
-            }
+            },
           },
           {
             path: 'space',
@@ -73,7 +87,7 @@ export default [
             component: () => import('@/pages/engine/data/pages/dataSpace.vue'),
             meta: {
               title: '数据空间管理',
-            }
+            },
           },
           {
             path: 'relation',
@@ -81,7 +95,7 @@ export default [
             component: () => import('@/pages/engine/data/pages/dataRelationshipMap.vue'),
             meta: {
               title: '数据关系网络',
-            }
+            },
           },
         ],
       },

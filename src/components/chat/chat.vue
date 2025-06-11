@@ -11,7 +11,7 @@ import chatSender from './chatSender.vue';
 
 const props = defineProps<{
   type: string;
-  activeChat: number;
+  activeChat: string;
 }>();
 </script>
 

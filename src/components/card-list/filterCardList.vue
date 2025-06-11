@@ -51,7 +51,7 @@ import { FilterData } from './types';
 
 const props = withDefaults(
   defineProps<{
-    selectedIds?: number[];
+    selectedIds?: string[];
     fetchList: (filterData: FilterData) => Promise<{
       list: any[];
       pages: number;
@@ -172,15 +172,15 @@ function refreshList() {
   fetchNextPage();
 }
 
-function handleCardClick(id: number) {
+function handleCardClick(id: string) {
   emit('card-click', id);
 }
 
-function handleOperateClick(value: string, id: number) {
+function handleOperateClick(value: string, id: string) {
   emit('operate-click', value, id);
 }
 
-function handleMaskBtnClick(key: string, id: number) {
+function handleMaskBtnClick(key: string, id: string) {
   emit('mask-btn-click', key, id);
 }
 </script>

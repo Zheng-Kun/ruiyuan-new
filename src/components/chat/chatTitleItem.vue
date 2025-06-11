@@ -52,7 +52,7 @@ import PinOutlineIcon from '@/assets/chat/PinOutline.svg?component';
 
 const props = withDefaults(
   defineProps<{
-    id?: number;
+    id?: string;
     title: string;
     pinned?: boolean;
     active?: boolean;

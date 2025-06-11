@@ -38,7 +38,7 @@ import { computed, ref } from 'vue';
 const props = withDefaults(
   defineProps<{
     value: string;
-    files?: number[];
+    files?: string[];
   }>(),
   {
     value: '',
@@ -48,7 +48,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:value', val: string): void;
-  (e: 'update:files', files: number[]): void;
+  (e: 'update:files', files: string[]): void;
 }>();
 
 const value = computed({
