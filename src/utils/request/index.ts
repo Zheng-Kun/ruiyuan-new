@@ -155,7 +155,7 @@ const transform: AxiosTransform = {
       return res;
     }
     if (res.data.code !== RequestStatusEnum.success && res.headers['content-type'].includes('application/json')) {
-      // console.log('响应拦截器错误', res.data);
+      // console.log('响应拦截器错误', res);
       // return res;
       MessagePlugin.error(res.data.msg || '请求失败，请稍后重试');
       // throw new Error(res.data.msg || '请求失败');
@@ -166,7 +166,11 @@ const transform: AxiosTransform = {
   // 响应错误处理
   responseInterceptorsCatch: (error: any, instance: AxiosInstance) => {
     const { config } = error;
-    if (!config || !config.requestOptions.retry) return Promise.reject(error);
+    // console.error('响应错误拦截器', error);
+    if (!config || !config.requestOptions.retry) {
+      MessagePlugin.error(error.message || '请求失败，请稍后重试');
+      return Promise.reject(error);
+    }
 
     config.retryCount = config.retryCount || 0;
 

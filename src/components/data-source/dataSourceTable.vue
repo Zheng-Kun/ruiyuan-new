@@ -2,6 +2,7 @@
   <t-table
     v-model:display-columns="displayColumns"
     stripe
+    row-key="index"
     resizable
     class="data-source-table"
     :data="data"
@@ -24,9 +25,9 @@
   >
     <template v-for="item in columns.filter((col) => col.colKey !== 'serial-number')" #[item.title] :key="item.colKey">
       <t-tooltip v-if="props.enableHeaderClick" placement="top" :content="`双击引用列名: ${item.colKey}`">
-        <div class="clickable-title header-title" @dblclick="handleTitleDblClick(item)">{{ item.title }}</div>
+        <div class="clickable-title header-title" @dblclick="handleTitleDblClick(item)">{{ item.colKey }}</div>
       </t-tooltip>
-      <div v-else class="header-title">{{ item.title }}</div>
+      <div v-else class="header-title">{{ item.colKey }}</div>
     </template>
   </t-table>
 </template>
@@ -82,7 +83,7 @@ async function fetchTableData() {
         { colKey: 'serial-number', title: '序号', width: 100, align: 'center' },
         ...response.columns.map((col: any) => ({
           colKey: col.columnName,
-          title: `title${col.columnName}`,
+          title: `title-${col.columnName}`,
           width: getColumnWidth(col.dataType),
           align: 'center',
           ellipsis: true,

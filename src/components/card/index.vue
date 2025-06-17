@@ -3,10 +3,12 @@
     <t-card :class="['custom-card', { clickable: enableClick, selected: selected }]" @click="handleCardClick">
       <template #header>
         <div class="card-header">
+          <!-- 新增 title-status 插槽 -->
+          <slot name="title-status"></slot>
           <h3>{{ info.title }}</h3>
           <div class="header-actions">
-            <t-dropdown
-              v-if="operates && operates.length > 0"
+            <!-- <t-dropdown
+              v-if="operates && operates.length > 1"
               :options="
                 operates.map((op) => ({
                   content: op.name,
@@ -18,7 +20,51 @@
               <t-button variant="text" theme="primary" @click.stop>
                 <more-icon />
               </t-button>
+            </t-dropdown> -->
+            <t-dropdown
+              v-if="operates && operates.length > 1"
+              class="operate-dropdown"
+              trigger="hover"
+              @click="handleOperateClick"
+            >
+              <t-button variant="text" theme="primary" @click.stop>
+                <more-icon />
+              </t-button>
+              <t-dropdown-menu class="dropdown-menu">
+                <t-dropdown-item v-for="op in operates" :key="op.key" :value="op.key">
+                  <!-- @click.stop="handleOperateClick({ value: op.key })" -->
+                  <!-- <template v-if="op.icon" #icon> -->
+                  <span class="dropdown-item-content" :class="op.theme || 'primary'">
+                    <t-icon v-if="op.icon" :name="op.icon" />
+                    {{ op.name }}
+                  </span>
+                  <!-- </template> -->
+                  <!-- <t-button
+                    variant="text"
+                    :theme="op.theme || 'primary'"
+                    size="small"
+                    @click.stop="handleOperateClick({ value: op.key })"
+                  >
+                    {{ op.name }}
+                    <template v-if="op.icon" #icon>
+                      <t-icon :name="op.icon" />
+                    </template>
+                  </t-button> -->
+                </t-dropdown-item>
+              </t-dropdown-menu>
             </t-dropdown>
+            <t-button
+              v-else-if="operates && operates.length === 1"
+              variant="text"
+              :theme="operates[0].theme || 'primary'"
+              size="small"
+              @click.stop="handleOperateClick({ value: operates[0].key })"
+            >
+              <template v-if="operates[0].icon" #icon>
+                <t-icon v-if="operates[0].icon" :name="operates[0].icon" />
+              </template>
+              {{ operates[0].name }}
+            </t-button>
             <t-checkbox v-if="canSelect" v-model="selected" class="select-checkbox" @click.stop />
           </div>
         </div>
@@ -80,6 +126,8 @@ const props = withDefaults(
     operates?: {
       name: string;
       key: string;
+      icon?: string;
+      theme?: 'primary' | 'danger' | 'default';
     }[];
     enableClick?: boolean;
     maskBtns?: {
@@ -130,7 +178,7 @@ function handleMaskBtnClick(key: string) {
 
 <style scoped lang="less">
 @primary-color: var(--td-brand-color);
-@hover-scale: 1.02;
+@hover-scale: 1.07;
 @transition-duration: 0.2s;
 // TODO mask 颜色需要根据主题变化
 @mask-bg: rgba(0, 0, 0, 0.5);
@@ -140,10 +188,13 @@ function handleMaskBtnClick(key: string) {
   position: relative;
   transition: transform @transition-duration;
   overflow: hidden;
+  box-shadow: 0 0 0;
 
   &.clickable:hover {
     transform: scale(@hover-scale);
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all ease-in-out @transition-duration;
   }
 
   &.selected {
@@ -159,6 +210,8 @@ function handleMaskBtnClick(key: string) {
       display: flex;
       align-items: center;
       justify-items: flex-end;
+      .operate-dropdown {
+      }
     }
 
     .select-checkbox {
@@ -204,6 +257,17 @@ function handleMaskBtnClick(key: string) {
       display: flex;
       gap: @gap-size;
     }
+  }
+}
+.dropdown-item-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  &.danger {
+    color: var(--td-error-color);
+  }
+  &.primary {
+    color: var(--td-brand-color);
   }
 }
 </style>

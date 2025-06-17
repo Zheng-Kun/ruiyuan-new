@@ -23,7 +23,12 @@
           @card-click="handleCardClick(item.id)"
           @operate-click="handleOperateClick"
           @mask-btn-click="handleMaskBtnClick"
-        />
+        >
+          <!-- 透传 card-title-status 插槽到 card 的 title-status 插槽 -->
+          <template #title-status>
+            <slot name="card-title-status" :item="item"></slot>
+          </template>
+        </card>
       </div>
 
       <!-- 空提示 -->
@@ -88,7 +93,7 @@ const searchFilterForm = ref<Record<string, any>>({});
 const list = ref([]);
 const loadingMore = ref(false);
 const hasMore = ref(true);
-const currentPage = ref(1);
+const currentPage = ref(0);
 const totalPage = ref(0);
 const containerRef = ref(null);
 
@@ -110,6 +115,7 @@ async function fetchNextPage() {
   loadingMore.value = true;
 
   try {
+    currentPage.value += 1;
     const {
       list: newList,
       pages,
@@ -122,6 +128,7 @@ async function fetchNextPage() {
     if (currentPage.value >= totalPage.value) {
       hasMore.value = false;
     }
+    checkAndLoadNextPage();
   } catch (error) {
     console.error('Error fetching next page:', error);
   } finally {
@@ -151,21 +158,24 @@ function checkAndLoadNextPage() {
   if (!container) return;
 
   // 检查容器高度是否小于视口高度
-  if (container.scrollHeight <= container.clientHeight) {
-    fetchNextPage();
-  }
+  nextTick(() => {
+    if (container.scrollHeight <= container.clientHeight && hasMore.value) {
+      fetchNextPage();
+    }
+  });
 }
 
 onMounted(() => {
-  fetchNextPage().then(() => {
+  fetchNextPage();
+  /* .then(() => {
     nextTick(() => {
       checkAndLoadNextPage();
     });
-  });
+  }); */
 });
 
 function refreshList() {
-  currentPage.value = 1;
+  currentPage.value = 0;
   totalPage.value = 0;
   hasMore.value = true;
   list.value = [];

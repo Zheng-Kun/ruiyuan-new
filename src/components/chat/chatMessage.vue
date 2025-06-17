@@ -115,7 +115,7 @@ function generateFakeItems(count: number): listType[] {
   for (let i = 0; i < count; i++) {
     const role = i % 2 === 0 ? 'ai' : 'user';
     const placement = role === 'ai' ? 'start' : 'end';
-    const key = i + 1;
+    const key = `message-${i}`; // 唯一标识符
     const content = role === 'ai' ? '💖'.repeat(5) : `真不错，我试试`;
     const loading = false;
     const shape = 'corner';

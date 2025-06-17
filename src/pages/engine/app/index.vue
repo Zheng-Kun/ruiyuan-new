@@ -28,6 +28,12 @@
     >
       <template #filters>
         <div class="filter-container">
+          <t-button theme="primary" variant="outline" class="create-btn" @click="handleCreate">
+            <template #icon>
+              <t-icon name="add" />
+            </template>
+            新建{{ cardMode === modeEnum.app ? '应用' : '项目' }}
+          </t-button>
           <t-radio-group
             v-model="cardMode"
             variant="primary-filled"
@@ -43,10 +49,7 @@
             v-model="filterForm.projectId"
             placeholder="请选择项目"
             class="filter-item"
-            :options="[
-              { label: '项目1', value: '1' },
-              { label: '项目2', value: '2' },
-            ]"
+            :options="projectOptions"
             label="项目"
             clearable
             filterable
@@ -55,10 +58,7 @@
             v-model="filterForm.tag"
             placeholder="请选择标签"
             class="filter-item"
-            :options="[
-              { label: '标签1', value: '1' },
-              { label: '标签2', value: '2' },
-            ]"
+            :options="tagOptions"
             clearable
             filterable
             label="标签"
@@ -79,7 +79,13 @@ import filterCardList from '@/components/card-list/filterCardList.vue';
 // import CardList from '@/components/card-list/index.vue';
 import { FilterData } from '@/components/card-list/types';
 
+interface Option {
+  label: string;
+  value: string;
+}
+
 const filterCardListRef = ref<InstanceType<typeof filterCardList> | null>(null);
+
 const selectedIds = ref([]); // 示例选中 ID 列表
 const modeEnum = {
   app: 'app',
@@ -91,6 +97,23 @@ const filterForm = reactive({
   tag: '',
   name: '',
 });
+
+const projectOptions = ref<Option[]>([
+  { label: '项目1', value: '1' },
+  { label: '项目2', value: '2' },
+]);
+const tagOptions = ref<Option[]>([
+  { label: '标签1', value: '1' },
+  { label: '标签2', value: '2' },
+]);
+
+function getProjectOptions() {
+  // TODO
+}
+
+function getTagOptions() {
+  // TODO 请求应用/项目的标签列表 需要判断
+}
 
 function handleModeChange() {
   // 重置过滤条件
@@ -211,6 +234,8 @@ function handleOperateClick(value: string, id: string) {
   console.log('点击操作按钮', value, id);
   MessagePlugin.success(`点击操作按钮 ${value}:${id}`);
 }
+
+function handleCreate() {}
 </script>
 <style lang="less" scoped>
 .app-inner-container {
@@ -220,6 +245,9 @@ function handleOperateClick(value: string, id: string) {
     align-items: center;
     justify-content: start;
     gap: 16px;
+    .create-btn {
+      flex-shrink: 0;
+    }
     // margin-bottom: 16px;
     .filter-item {
       &.switch-mode {

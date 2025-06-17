@@ -11,7 +11,8 @@ const __dirname = path.dirname(__filename);
 
 // 配置项
 const remoteUser = 'root';
-const remoteHost = '192.168.120.167';
+// const remoteHost = '192.168.120.167';
+const remoteHost = '101.132.189.0:6000';
 const remoteDir = '/var/www/ruiyuan-new';
 const archiveName = 'deploy_package.tar.gz';
 
@@ -41,14 +42,21 @@ console.log(`压缩包大小：${(archiveStats.size / 1024 / 1024).toFixed(2)} M
 // 3. 上传压缩包到远程服务器
 console.log('上传压缩包到远程服务器...');
 const uploadStart = Date.now();
-execSync(`scp ${archivePath} ${remoteUser}@${remoteHost}:${remoteDir}/`, { stdio: 'inherit' });
+// 处理端口
+const [host, port] = remoteHost.split(':');
+const scpPort = port ? `-P ${port}` : '';
+const scpCmd = `scp ${scpPort} ${archivePath} ${remoteUser}@${host}:${remoteDir}/`;
+console.log(`[执行] ${scpCmd}`);
+execSync(scpCmd, { stdio: 'inherit' });
 const uploadEnd = Date.now();
 console.log(`上传完成，用时 ${(uploadEnd - uploadStart) / 1000}s`);
 
 // 4. 远程解压并删除压缩包
 console.log('远程解压...');
 const remoteStart = Date.now();
-execSync(`ssh ${remoteUser}@${remoteHost} "cd ${remoteDir} && tar -xzf ${archiveName} && rm -f ${archiveName}"`, {
+const sshCmd = `ssh ${scpPort} ${remoteUser}@${host} "cd ${remoteDir} && tar -xzf ${archiveName} && rm -f ${archiveName}"`;
+console.log(`[执行] ${sshCmd}`);
+execSync(sshCmd, {
   stdio: 'inherit',
 });
 const remoteEnd = Date.now();

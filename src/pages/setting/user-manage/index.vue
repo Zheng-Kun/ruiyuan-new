@@ -51,6 +51,7 @@
         :columns="tableColumns"
         :loading="tableData.loading"
         :pagination="tableData.pagination"
+        row-key="id"
       >
         <template #role="{ row }">
           <t-tag :theme="row.role === '0' ? 'primary' : row.role === '1' ? 'warning' : 'success'" size="small">

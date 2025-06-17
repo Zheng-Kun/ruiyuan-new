@@ -101,7 +101,26 @@ async function fetchNextPage() {
     console.error('Error fetching next page:', error);
   } finally {
     loadingMore.value = false;
+    // 新增：每次加载后检查是否还需要继续加载
+    nextTick(() => {
+      if (hasMore.value) {
+        checkAndLoadNextPage();
+      }
+    });
   }
+}
+
+function initPage() {
+  currentPage.value = 1;
+  totalPage.value = 0;
+  list.value = [];
+  hasMore.value = true;
+  loadingMore.value = false;
+}
+
+function refreshList() {
+  initPage();
+  fetchNextPage();
 }
 
 function handleScroll() {
@@ -127,11 +146,12 @@ function checkAndLoadNextPage() {
 }
 
 onMounted(() => {
-  fetchNextPage().then(() => {
+  refreshList();
+  /* .then(() => {
     nextTick(() => {
       checkAndLoadNextPage();
     });
-  });
+  }); */
 });
 
 function handleCardClick(id: number) {
@@ -145,6 +165,11 @@ function handleOperateClick(value: string, id: number) {
 function handleMaskBtnClick(key: string, id: number) {
   emit('mask-btn-click', key, id);
 }
+
+defineExpose({
+  initPage,
+  refreshList,
+});
 </script>
 
 <style scoped lang="less">

@@ -1,12 +1,13 @@
 import { defineStore } from 'pinia';
 
+import UserApi from '@/api/user';
+import { UserRoleEnum } from '@/constants';
 import { usePermissionStore } from '@/store';
 import type { UserInfo } from '@/types/interface';
-import UserApi from '@/api/user'
 
 const InitUserInfo: UserInfo = {
   username: '', // 用户名，用于展示在页面右上角头像处
-  roles: [], // 前端权限模型使用 如果使用请配置modules/permission-fe.ts使用
+  roles: [] as string[], // 前端权限模型使用 如果使用请配置modules/permission-fe.ts使用
 };
 
 export const useUserStore = defineStore('user', {
@@ -27,17 +28,16 @@ export const useUserStore = defineStore('user', {
       // console.log("登录成功", this.token);
     },
     async getUserInfo() {
-
       await UserApi.getUserInfo().then((data) => {
         // console.log('userInfo',data);
         this.userInfo = {
           ...data,
           username: data.username,
-          roles: data.role.map((item: { roleId: number, roleName: string }) => item.roleId),
-        }
+          roles: data.role.map((item: { roleId: number; roleName: string }) => item.roleId),
+        };
       });
       const permissionStore = usePermissionStore();
-      permissionStore.initRoutes(this.userInfo.roles);
+      permissionStore.initRoutes(this.userInfo.roles as UserRoleEnum[]);
     },
     async logout() {
       this.token = '';

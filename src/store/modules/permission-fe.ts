@@ -4,9 +4,9 @@
 import { defineStore } from 'pinia';
 import { RouteRecordRaw } from 'vue-router';
 
+import { UserRoleEnum } from '@/constants';
 import router, { allRoutes } from '@/router';
 import { store } from '@/store';
-import { UserRoleEnum } from '@/constants'
 
 function filterPermissionsRouters(routes: Array<RouteRecordRaw>, roles: Array<UserRoleEnum>) {
   const res: Array<RouteRecordRaw> = [];
@@ -16,7 +16,7 @@ function filterPermissionsRouters(routes: Array<RouteRecordRaw>, roles: Array<Us
     route.children?.forEach((childRouter) => {
       const roleCodes = childRouter.meta?.roleCodes as UserRoleEnum[];
       // console.log(roleCodes)
-      if(!roleCodes || !roleCodes?.length || roles.filter((item) => roleCodes.includes(item)).length) {
+      if (!roleCodes || !roleCodes?.length || roles.filter((item) => roleCodes.includes(item)).length) {
         children.push(childRouter);
       } else {
         removeRoutes.push(childRouter);
@@ -47,12 +47,12 @@ export const usePermissionStore = defineStore('permission', {
       // roles = userStore.userInfo.roles;
       let removeRoutes: Array<RouteRecordRaw> = [];
       // special token
-      if(!roles || roles.length === 0) {
-        accessedRouters = allRoutes
-      }
-      /* if (roles.includes(UserRoleEnum.admin)) {
+      if (!roles || roles.length === 0) {
         accessedRouters = allRoutes;
-      } */ else {
+      } else {
+        /* if (roles.includes(UserRoleEnum.admin)) {
+        accessedRouters = allRoutes;
+      } */
         const res = filterPermissionsRouters(allRoutes, roles);
         accessedRouters = res.accessedRouters;
         removeRoutes = res.removeRoutes;

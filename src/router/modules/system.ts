@@ -27,7 +27,7 @@ export default [
           title: {
             zh_CN: '模型配置',
           },
-          roleCodes: [UserRoleEnum.level3],
+          // roleCodes: [],
         },
       },
       {

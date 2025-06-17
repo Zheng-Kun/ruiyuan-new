@@ -45,8 +45,8 @@ class DataSourceApi {
    * @return {*}
    */
   deleteItem(id: string) {
-    return request.delete({
-      url: `/datasource/${id}`,
+    return request.get({
+      url: `/datasource/delete/${id}`,
     });
   }
 }

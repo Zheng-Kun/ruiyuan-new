@@ -185,7 +185,7 @@ const typeList = Object.keys(colorMap);
 
 const files = ref<SelfFilesCardProps[]>([
   {
-    id: 1,
+    id: '1',
     name: 'tupian.png',
     fileSize: 1024 * 1024 * 2,
     fileType: 'image',
@@ -194,7 +194,7 @@ const files = ref<SelfFilesCardProps[]>([
     showDelIcon: true,
   },
   {
-    id: 1,
+    id: '1',
     name: '文件.txt',
     fileSize: 1024 * 2,
     fileType: typeList[Math.floor(Math.random() * typeList.length)] as FilesType,
@@ -204,7 +204,7 @@ const files = ref<SelfFilesCardProps[]>([
     showDelIcon: true,
   },
   {
-    id: 2,
+    id: '2',
     name: '文件.txt',
     fileSize: 1024 * 2,
     fileType: typeList[Math.floor(Math.random() * typeList.length)] as FilesType,
@@ -214,7 +214,7 @@ const files = ref<SelfFilesCardProps[]>([
     showDelIcon: true,
   },
   {
-    id: 3,
+    id: '3',
     name: '文件.txt',
     fileSize: 1024 * 2,
     fileType: typeList[Math.floor(Math.random() * typeList.length)] as FilesType,
@@ -224,7 +224,7 @@ const files = ref<SelfFilesCardProps[]>([
     showDelIcon: true,
   },
   {
-    id: 4,
+    id: '4',
     name: '文件.txt',
     fileSize: 1024 * 2,
     fileType: typeList[Math.floor(Math.random() * typeList.length)] as FilesType,
@@ -234,7 +234,7 @@ const files = ref<SelfFilesCardProps[]>([
     showDelIcon: true,
   },
   {
-    id: 5,
+    id: '5',
     name: '文件.txt',
     fileSize: 1024 * 2,
     fileType: typeList[Math.floor(Math.random() * typeList.length)] as FilesType,
@@ -244,7 +244,7 @@ const files = ref<SelfFilesCardProps[]>([
     showDelIcon: true,
   },
   {
-    id: 6,
+    id: '6',
     name: '文件.txt',
     fileSize: 1024 * 2,
     fileType: typeList[Math.floor(Math.random() * typeList.length)] as FilesType,
@@ -334,7 +334,7 @@ async function handleHttpRequest(options: any) {
       imgFile: options.file,
     };
     files.value.push({
-      id: files.value.length,
+      id: `${files.value.length}`,
       uid: res.uid,
       name: res.fileName,
       fileSize: res.fileSize,

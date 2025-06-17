@@ -1,6 +1,5 @@
 <template>
   <div class="data-source-container">
-    {{ dataSourcePreviewVisible }}
     <filterCardList
       :fetch-list="fetchList"
       :page-size="10"
@@ -9,11 +8,17 @@
       :filter-form="filterForm"
       :info-config="infoConfig"
       :operates="operates"
-      @card-click="handleCardClick"
+      @card-click="showPreviewDrawer"
       @operate-click="handleOperateClick"
     >
       <template #filters>
-        <div class="filter-from">
+        <div class="filter-form">
+          <t-button theme="primary" variant="outline" class="create-btn" @click="handleCreateDataSource">
+            <template #icon>
+              <t-icon name="add" />
+            </template>
+            新建数据源
+          </t-button>
           <t-input v-model="filterForm.tableName" placeholder="请输入名称" label="名称" clearable></t-input>
           <t-select
             v-model="filterForm.spaceId"
@@ -22,7 +27,17 @@
             clearable
             filterable
           ></t-select>
+          <t-select v-model="filterForm.tag" :options="tagOptions" label="标签" clearable filterable></t-select>
         </div>
+      </template>
+      <!-- 新增 card-title-status 插槽 -->
+      <template #card-title-status="{ item }">
+        <span class="ds-status" :class="item.status === 'enabled' ? 'enabled' : 'disabled'">
+          {{ item.status === 'enabled' ? '启用' : '禁用' }}
+        </span>
+        <span class="ds-category" :class="item.category === 'online' ? 'online' : 'local'">
+          {{ item.category === 'online' ? '在线数据' : '本地数据' }}
+        </span>
       </template>
     </filterCardList>
     <dataSourceDetailPreviewDrawer :id="dataSourcePreviewId" v-model:visible="dataSourcePreviewVisible" />
@@ -39,6 +54,7 @@ import dataSourceDetailPreviewDrawer from '@/components/data-source/dataSourceDe
 const filterForm = reactive({
   tableName: '',
   spaceId: '',
+  tag: '',
 });
 
 const dataSourcePreviewVisible = ref(false);
@@ -50,6 +66,12 @@ const spaceOptions = ref([
   { label: '数据空间3', value: '3' },
 ]);
 
+const tagOptions = ref([
+  { label: '标签1', value: 'tag1' },
+  { label: '标签2', value: 'tag2' },
+  { label: '标签3', value: 'tag3' },
+]);
+
 const infoConfig = ref([
   { label: '数据空间', key: 'space' },
   {
@@ -59,7 +81,15 @@ const infoConfig = ref([
 ]);
 
 async function fetchList(filterData: FilterData) {
-  return dataSourceApi.getList(filterData).then((data) => {
+  const filterForm = {
+    ...filterData,
+    filters: {
+      ...filterData.filters,
+      tags: filterData.filters.tag ? [filterData.filters.tag] : [],
+    } as any,
+  };
+  delete filterForm.filters.tag; // 删除 tag 字段
+  return dataSourceApi.getList(filterForm).then((data) => {
     return {
       ...data,
       list: data.records.map((item: any) => ({
@@ -74,14 +104,15 @@ async function fetchList(filterData: FilterData) {
   });
 }
 
-function handleCardClick() {
-  // const a = 'sdf';
+function showPreviewDrawer(id: string) {
+  dataSourcePreviewId.value = id;
+  dataSourcePreviewVisible.value = true;
 }
 
 const operates = ref([
-  { name: '编辑', key: 'edit' },
-  { name: '查看元数据', key: 'viewMetadata' },
-  { name: '删除', key: 'delete' },
+  // { name: '编辑', key: 'edit' },
+  // { name: '查看元数据', key: 'viewMetadata' },
+  { name: '删除', key: 'delete', icon: 'delete', theme: 'danger' },
 ]);
 function handleOperateClick(value: string, id: string) {
   switch (value) {
@@ -94,8 +125,7 @@ function handleOperateClick(value: string, id: string) {
       break;
     case 'viewMetadata':
       console.log(`查看元数据 ID: ${id}`);
-      dataSourcePreviewId.value = id;
-      dataSourcePreviewVisible.value = true;
+      showPreviewDrawer(id);
       break;
     default:
       console.warn(`未知操作: ${value}`);
@@ -127,16 +157,54 @@ function handleDelete(id: string) {
     },
   });
 }
+
+function handleCreateDataSource() {}
 </script>
 
 <style scoped lang="less">
 .data-source-container {
   // height: 2000px;
   height: 100%;
-  .filter-from {
+  .filter-form {
+    .create-btn {
+      flex-shrink: 0;
+    }
     display: flex;
     gap: var(--td-size-4);
     justify-content: flex-start;
+  }
+}
+
+.ds-status {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 20px;
+  &.enabled {
+    background: #e6f7ec;
+    color: #00a870;
+  }
+  &.disabled {
+    background: #fbeaea;
+    color: #e34d59;
+  }
+}
+.ds-category {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 20px;
+  &.online {
+    background: #e6f0ff;
+    color: #0052d9;
+  }
+  &.local {
+    background: #fff7e6;
+    color: #fa8c16;
   }
 }
 </style>

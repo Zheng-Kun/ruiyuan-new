@@ -60,7 +60,8 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       host: '0.0.0.0',
       proxy: {
         [VITE_API_URL_PREFIX]: {
-          target: 'http://192.168.120.167:10000/',
+          // target: 'http://192.168.120.167:10000/',
+          target: 'http://101.132.189.0:10000/',
           rewrite(path) {
             return path.replace(new RegExp(`^${VITE_API_URL_PREFIX}`), '');
           },

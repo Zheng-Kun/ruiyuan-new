@@ -33,8 +33,8 @@ export type ModeType = 'dark' | 'light';
 
 export interface UserInfo {
   username: string;
-  userId?: number;
-  roles: number[];
+  userId?: string;
+  roles: string[];
 }
 
 export interface NotificationItem {
