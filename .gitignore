@@ -26,6 +26,9 @@ test-report.html
 .idea/
 yarn-error.log
 *.zip
+*.tar.gz
+*.tgz
+*.log
 .history
 .stylelintcache
 
