@@ -4,8 +4,12 @@
       <template #header>
         <div class="card-header">
           <!-- 新增 title-status 插槽 -->
-          <slot name="title-status"></slot>
-          <h3>{{ info.title }}</h3>
+          <div class="header-title">
+            <h3>{{ info.title }}</h3>
+            <div class="title-status">
+              <slot name="title-status"></slot>
+            </div>
+          </div>
           <div class="header-actions">
             <!-- <t-dropdown
               v-if="operates && operates.length > 1"
@@ -205,7 +209,21 @@ function handleMaskBtnClick(key: string) {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    .header-title {
+      display: flex;
+      // align-items: center;
+      flex-direction: column;
+      // justify-content: start;
+      h3 {
+        margin: 0;
+        font-size: 16px;
+        color: var(--td-text-color-primary);
+      }
+      .title-status {
+        margin-top: 8px;
+      }
+    }
     .header-actions {
       display: flex;
       align-items: center;

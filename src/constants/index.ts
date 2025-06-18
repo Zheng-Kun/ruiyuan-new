@@ -16,6 +16,10 @@ export enum RequestStatusEnum {
 export enum DropdownKeyEnum {
   project = 'project', // 项目
   engineTemplate = 'engine_template', // 智擎模板
+
+  dataSourceTag = 'tableTags', // 数据源标签
+  spaceTag = 'spaceTags', // 空间标签
+  dataSpace = 'dataSpaces', // 数据空间
 }
 
 // 用户角色

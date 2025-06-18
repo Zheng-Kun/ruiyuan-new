@@ -32,12 +32,16 @@
       </template>
       <!-- 新增 card-title-status 插槽 -->
       <template #card-title-status="{ item }">
-        <span class="ds-status" :class="item.status === 'enabled' ? 'enabled' : 'disabled'">
-          {{ item.status === 'enabled' ? '启用' : '禁用' }}
-        </span>
-        <span class="ds-category" :class="item.category === 'online' ? 'online' : 'local'">
-          {{ item.category === 'online' ? '在线数据' : '本地数据' }}
-        </span>
+        <div class="card-title-status">
+          <span class="ds-status status-tag" :class="item.status === 'enabled' ? 'enabled' : 'disabled'">
+            <component :is="item.status === 'enabled' ? OnStatusIcon : OffStatusIcon" class="status-icon" />
+            {{ item.status === 'enabled' ? '启用' : '禁用' }}
+          </span>
+          <span class="ds-category status-tag" :class="item.category === 'online' ? 'online' : 'local'">
+            <component :is="item.category === 'online' ? OnlineDataIcon : LocalDataIcon" class="status-icon" />
+            {{ item.category === 'online' ? '在线数据' : '本地数据' }}
+          </span>
+        </div>
       </template>
     </filterCardList>
     <dataSourceDetailPreviewDrawer :id="dataSourcePreviewId" v-model:visible="dataSourcePreviewVisible" />
@@ -47,6 +51,10 @@
 import { DialogPlugin, MessagePlugin } from 'tdesign-vue-next';
 
 import dataSourceApi from '@/api/dataSource';
+import OnStatusIcon from '@/assets/datasource/MdiAccessPointCheck.svg?component';
+import OffStatusIcon from '@/assets/datasource/MdiAccessPointOff.svg?component';
+import OnlineDataIcon from '@/assets/datasource/MdiDatabase.svg?component';
+import LocalDataIcon from '@/assets/datasource/MdiFileExcel.svg?component';
 import filterCardList from '@/components/card-list/filterCardList.vue';
 import { FilterData } from '@/components/card-list/types';
 import dataSourceDetailPreviewDrawer from '@/components/data-source/dataSourceDetailPreviewDrawer.vue';
@@ -74,10 +82,10 @@ const tagOptions = ref([
 
 const infoConfig = ref([
   { label: '数据空间', key: 'space' },
-  {
+  /* {
     label: 'Nickname',
     key: 'tableRemarkName',
-  },
+  }, */
 ]);
 
 async function fetchList(filterData: FilterData) {
@@ -95,10 +103,10 @@ async function fetchList(filterData: FilterData) {
       list: data.records.map((item: any) => ({
         ...item,
         title: item.tableName,
-        // desc: item.tableDesc || '暂无描述',
+        desc: item.tableDesc || '暂无描述',
         id: item.tableId,
         space: '数据空间',
-        tags: ['ceshi', '测试', '测试数据源'],
+        tags: item.datasourceTag,
       })),
     };
   });
@@ -174,37 +182,43 @@ function handleCreateDataSource() {}
     justify-content: flex-start;
   }
 }
-
-.ds-status {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 0 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  line-height: 20px;
-  &.enabled {
-    background: #e6f7ec;
-    color: #00a870;
-  }
-  &.disabled {
-    background: #fbeaea;
-    color: #e34d59;
-  }
-}
-.ds-category {
-  display: inline-block;
-  margin-right: 8px;
-  padding: 0 8px;
-  border-radius: 10px;
-  font-size: 12px;
-  line-height: 20px;
-  &.online {
-    background: #e6f0ff;
-    color: #0052d9;
-  }
-  &.local {
-    background: #fff7e6;
-    color: #fa8c16;
+.card-title-status {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 8px;
+    padding: 2px 8px;
+    font-size: 12px;
+    line-height: 20px;
+    border-radius: 4px;
+    .status-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+    }
+    &.ds-status {
+      &.enabled {
+        background: #e6f7ec;
+        color: #00a870;
+      }
+      &.disabled {
+        background: #fbeaea;
+        color: #e34d59;
+      }
+    }
+    &.ds-category {
+      &.online {
+        background: #e6f0ff;
+        color: #0052d9;
+      }
+      &.local {
+        background: #fff7e6;
+        color: #fa8c16;
+      }
+    }
   }
 }
 </style>
